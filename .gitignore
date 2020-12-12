@@ -10,5 +10,6 @@ __pycache__/
 *.pyc
 
 # Service files
-/debug.log
+debug.log
 .DS_Store
+dataset.json
