@@ -1,0 +1,14 @@
+# Environment
+.venv/
+.env
+
+#IDLE
+.idea/
+
+#Python files
+__pycache__/
+*.pyc
+
+# Service files
+/debug.log
+.DS_Store
