@@ -7,10 +7,11 @@ from scrapy.spiders import CrawlSpider, Rule
 class DromSpider(CrawlSpider):
     name = 'drom'
     allowed_domains = ['drom.ru']
+    start_urls = ['']
     user_agent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_0_0) AppleWebKit/537.36 (KHTML, like Gecko) " \
                  "Chrome/86.0.4240.198 Safari/537.36"
 
-    def start_requests(self):
+    def start_requests(self):  # TODO add spider arguments and make a request with them
         yield scrapy.Request(url='https://auto.drom.ru/audi/100/', headers={'User-Agent': self.user_agent})
 
     rules = (
