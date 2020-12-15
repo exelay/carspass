@@ -1,17 +1,15 @@
 import re
-from urllib.parse import unquote
-
 import pytz
 import json
 import logging
+
 from datetime import datetime
+from urllib.parse import unquote
 
 import scrapy
-from scrapy.linkextractors import LinkExtractor
-from scrapy.spiders import CrawlSpider, Rule
 
 
-class YoulaSpider(CrawlSpider):
+class YoulaSpider(scrapy.Spider):
     name = 'youla'
     allowed_domains = ['youla.ru']
     user_agent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_0_0) AppleWebKit/537.36 (KHTML, like Gecko) " \
@@ -19,12 +17,7 @@ class YoulaSpider(CrawlSpider):
 
     def start_requests(self):  # TODO add spider arguments and make a request with them
         yield scrapy.Request(url='https://auto.youla.ru/rossiya/cars/used/audi/100/',
-                             headers={'User-Agent': self.user_agent})
-
-    rules = (
-        Rule(LinkExtractor(restrict_xpaths='//a[@data-target-id="button-link-serp-paginator"][last()]'),
-             callback='parse_item', follow=True),
-    )
+                             headers={'User-Agent': self.user_agent}, callback=self.parse_item)
 
     @staticmethod
     def get_id(ad):
@@ -115,3 +108,9 @@ class YoulaSpider(CrawlSpider):
                 'actual': True,
                 'source': 'youla',
             }
+
+        next_page = response.xpath('//a[.//span[contains(text(), "Вперед")]]/@href').get()
+        if next_page:
+            absolute_url = f'https://auto.youla.ru{next_page}'
+            yield scrapy.Request(url=absolute_url, headers={'User-Agent': self.user_agent},
+                                 callback=self.parse_item)
