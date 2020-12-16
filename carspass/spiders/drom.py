@@ -9,8 +9,13 @@ class DromSpider(scrapy.Spider):
     user_agent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_0_0) AppleWebKit/537.36 (KHTML, like Gecko) " \
                  "Chrome/86.0.4240.198 Safari/537.36"
 
+    def __init__(self, brand, model):
+        super(DromSpider, self).__init__()
+        self.brand = brand
+        self.model = model
+
     def start_requests(self):  # TODO add spider arguments and make a request with them
-        url = 'https://auto.drom.ru/audi/100/'
+        url = f'https://auto.drom.ru/{self.brand}/{self.model}/'
         yield scrapy.Request(url=url, headers={'User-Agent': self.user_agent}, callback=self.parse_item)
 
     @staticmethod
