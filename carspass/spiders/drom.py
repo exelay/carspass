@@ -9,13 +9,31 @@ class DromSpider(scrapy.Spider):
     user_agent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_0_0) AppleWebKit/537.36 (KHTML, like Gecko) " \
                  "Chrome/86.0.4240.198 Safari/537.36"
 
-    def __init__(self, brand, model):
-        super(DromSpider, self).__init__()
-        self.brand = brand
-        self.model = model
+    def start_requests(self):
+        brand = getattr(self, "brand")
+        model = getattr(self, "model")
+        city = getattr(self, "city", None)
+        price_min = getattr(self, "price_min", None)
+        price_max = getattr(self, "price_max", None)
+        year_min = getattr(self, "year_min", None)
+        year_max = getattr(self, "year_max", None)
+        transmission = getattr(self, "transmission", None)
+        v_min = getattr(self, "v_min", None)
+        v_max = getattr(self, "v_max", None)
+        radius = getattr(self, "radius", None)
+        steering_w = getattr(self, "steering_w", None)
+        car_body = getattr(self, "car_body", None)
 
-    def start_requests(self):  # TODO add spider arguments and make a request with them
-        url = f'https://auto.drom.ru/{self.brand}/{self.model}/'
+        url = (
+            f"https://auto.drom.ru/{brand}/{model}/used/"
+            f"?cid[]={city}&minprice={price_min}"
+            f"&maxprice={price_max}"
+            f"&minyear={year_min}&maxyear={year_max}"
+            f"&transmission={transmission}"
+            f"&mv={v_min}&xv={v_max}&distance={radius}"
+            f"&w={steering_w}&{car_body}"
+        ).replace('None', '')
+
         yield scrapy.Request(url=url, headers={'User-Agent': self.user_agent}, callback=self.parse_item)
 
     @staticmethod
