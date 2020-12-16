@@ -1,10 +1,9 @@
 import logging
+
 import scrapy
-from scrapy.linkextractors import LinkExtractor
-from scrapy.spiders import CrawlSpider, Rule
 
 
-class AutoSpider(CrawlSpider):
+class AutoSpider(scrapy.Spider):
     name = 'auto'
     allowed_domains = ['auto.ru']
     user_agent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_0_0) AppleWebKit/537.36 (KHTML, like Gecko) " \
@@ -12,12 +11,7 @@ class AutoSpider(CrawlSpider):
 
     def start_requests(self):  # TODO add spider arguments and make a request with them
         url = 'https://auto.ru/cars/audi/100/all/?sort=cr_date-desc'
-        yield scrapy.Request(url=url, headers={'User-Agent': self.user_agent})
-
-    rules = (
-        Rule(LinkExtractor(restrict_xpaths='//a[contains(@class, "ListingPagination-module__next")]'),
-             callback='parse_item', follow=True),
-    )
+        yield scrapy.Request(url=url, headers={'User-Agent': self.user_agent}, callback=self.parse_item)
 
     @staticmethod
     def get_id(ad):
@@ -97,3 +91,7 @@ class AutoSpider(CrawlSpider):
                 'actual': True if self.get_price(ad) else False,
                 'source': 'auto',
             }
+
+        next_page = response.xpath('//a[contains(@class, "ListingPagination-module__next")]/@href').get()
+        if next_page:
+            yield scrapy.Request(url=next_page, headers={'User-Agent': self.user_agent}, callback=self.parse_item)

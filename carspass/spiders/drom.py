@@ -6,13 +6,12 @@ import scrapy
 class DromSpider(scrapy.Spider):
     name = 'drom'
     allowed_domains = ['drom.ru']
-    start_urls = ['']
     user_agent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_0_0) AppleWebKit/537.36 (KHTML, like Gecko) " \
                  "Chrome/86.0.4240.198 Safari/537.36"
 
     def start_requests(self):  # TODO add spider arguments and make a request with them
-        yield scrapy.Request(url='https://auto.drom.ru/audi/100/', headers={'User-Agent': self.user_agent},
-                             callback=self.parse_item)
+        url = 'https://auto.drom.ru/audi/100/'
+        yield scrapy.Request(url=url, headers={'User-Agent': self.user_agent}, callback=self.parse_item)
 
     @staticmethod
     def get_id(ad):
@@ -93,5 +92,4 @@ class DromSpider(scrapy.Spider):
 
         next_page = response.xpath('//a[@data-ftid="component_pagination-item-next"]/@href').get()
         if next_page:
-            yield scrapy.Request(url=next_page, headers={'User-Agent': self.user_agent},
-                                 callback=self.parse_item)
+            yield scrapy.Request(url=next_page, headers={'User-Agent': self.user_agent}, callback=self.parse_item)
