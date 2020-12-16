@@ -2,11 +2,9 @@ import json
 import logging
 
 import scrapy
-from scrapy.linkextractors import LinkExtractor
-from scrapy.spiders import CrawlSpider, Rule
 
 
-class AvitoSpider(CrawlSpider):
+class AvitoSpider(scrapy.Spider):
     name = 'avito'
     allowed_domains = ['avito.ru']
     user_agent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_0_0) AppleWebKit/537.36 (KHTML, like Gecko) " \
@@ -17,11 +15,6 @@ class AvitoSpider(CrawlSpider):
             url='https://www.avito.ru/sankt-peterburg/avtomobili/audi/100_2420-ASgBAgICAkTgtg3elyjitg3gmSg?cd=1',
             headers={'User-Agent': self.user_agent}
         )
-
-    rules = (
-        Rule(LinkExtractor(restrict_xpaths='//a[@data-target-id="button-link-serp-paginator"][last()]'),
-             callback='parse_item', follow=True),
-    )
 
     @staticmethod
     def get_id(ad):
