@@ -12,7 +12,7 @@ class DromSpider(scrapy.Spider):
     def start_requests(self):
         brand = getattr(self, "brand")
         model = getattr(self, "model")
-        city = getattr(self, "city", None)
+        city = getattr(self, "city", 135)
         price_min = getattr(self, "price_min", None)
         price_max = getattr(self, "price_max", None)
         year_min = getattr(self, "year_min", None)
