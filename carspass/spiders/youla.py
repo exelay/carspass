@@ -15,13 +15,10 @@ class YoulaSpider(scrapy.Spider):
     user_agent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_0_0) AppleWebKit/537.36 (KHTML, like Gecko) " \
                  "Chrome/86.0.4240.198 Safari/537.36"
 
-    def __init__(self, brand, model):
-        super(YoulaSpider, self).__init__()
-        self.brand = brand
-        self.model = model
-
     def start_requests(self):  # TODO add spider arguments and make a request with them
-        url = f"https://auto.youla.ru/rossiya/cars/used/{self.brand}/{self.model}/"
+        brand = getattr(self, "brand")
+        model = getattr(self, "model")
+        url = f"https://auto.youla.ru/rossiya/cars/used/{brand}/{model}/"
         yield scrapy.Request(url=url, headers={'User-Agent': self.user_agent}, callback=self.parse_item)
 
     @staticmethod
