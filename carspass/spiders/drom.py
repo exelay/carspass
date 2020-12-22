@@ -24,6 +24,8 @@ class DromSpider(scrapy.Spider):
         steering_w = getattr(self, "steering_w", None)
         car_body = getattr(self, "car_body", None)
 
+        token = getattr(self, "token")
+
         url = (
             f"https://auto.drom.ru/{brand}/{model}/used/"
             f"?cid[]={city}&minprice={price_min}"
