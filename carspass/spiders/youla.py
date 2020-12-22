@@ -15,10 +15,27 @@ class YoulaSpider(scrapy.Spider):
     user_agent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_0_0) AppleWebKit/537.36 (KHTML, like Gecko) " \
                  "Chrome/86.0.4240.198 Safari/537.36"
 
-    def start_requests(self):  # TODO add spider arguments and make a request with them
-        brand = getattr(self, "brand")
-        model = getattr(self, "model")
-        url = f"https://auto.youla.ru/rossiya/cars/used/{brand}/{model}/"
+    def __init__(self, *args, **kwargs):
+        super(YoulaSpider, self).__init__(*args, **kwargs)
+        self.token = getattr(self, "token")
+
+        self.brand = getattr(self, "brand")
+        self.model = getattr(self, "model")
+
+        self.city = getattr(self, "city", "sankt-peterburg")
+        self.price_min = getattr(self, "price_min", None)
+        self.price_max = getattr(self, "price_max", None)
+        self.year_min = getattr(self, "year_min", None)
+        self.year_max = getattr(self, "year_max", None)
+        self.transmission = getattr(self, "transmission", None)
+        self.v_min = getattr(self, "v_min", None)
+        self.v_max = getattr(self, "v_max", None)
+        self.radius = getattr(self, "radius", None)
+        self.steering_w = getattr(self, "steering_w", None)
+        self.car_body = getattr(self, "car_body", None)
+
+    def start_requests(self):
+        url = f"https://auto.youla.ru/{self.city}/cars/used/{self.brand}/{self.model}/"
         yield scrapy.Request(url=url, headers={'User-Agent': self.user_agent}, callback=self.parse_item)
 
     @staticmethod
