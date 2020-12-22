@@ -8,7 +8,7 @@ class MongodbPipeline:
         self.client = pymongo.MongoClient(
             "mongodb+srv://imdb:rowdy0987@carspass.mskrx.mongodb.net/<dbname>?retryWrites=true&w=majority"
         )
-        self.db = self.client["IMDB"]
+        self.db = self.client["Carspass"]
 
     def close_spider(self, spider):
         self.client.close()

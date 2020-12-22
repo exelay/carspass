@@ -9,31 +9,34 @@ class DromSpider(scrapy.Spider):
     user_agent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_0_0) AppleWebKit/537.36 (KHTML, like Gecko) " \
                  "Chrome/86.0.4240.198 Safari/537.36"
 
+    def __init__(self, *args, **kwargs):
+        super(DromSpider, self).__init__(*args, **kwargs)
+        self.token = getattr(self, "token")
+
+        self.brand = getattr(self, "brand")
+        self.model = getattr(self, "model")
+
+        self.city = getattr(self, "city", 135)
+        self.price_min = getattr(self, "price_min", None)
+        self.price_max = getattr(self, "price_max", None)
+        self.year_min = getattr(self, "year_min", None)
+        self.year_max = getattr(self, "year_max", None)
+        self.transmission = getattr(self, "transmission", None)
+        self.v_min = getattr(self, "v_min", None)
+        self.v_max = getattr(self, "v_max", None)
+        self.radius = getattr(self, "radius", None)
+        self.steering_w = getattr(self, "steering_w", None)
+        self.car_body = getattr(self, "car_body", None)
+
     def start_requests(self):
-        brand = getattr(self, "brand")
-        model = getattr(self, "model")
-        city = getattr(self, "city", 135)
-        price_min = getattr(self, "price_min", None)
-        price_max = getattr(self, "price_max", None)
-        year_min = getattr(self, "year_min", None)
-        year_max = getattr(self, "year_max", None)
-        transmission = getattr(self, "transmission", None)
-        v_min = getattr(self, "v_min", None)
-        v_max = getattr(self, "v_max", None)
-        radius = getattr(self, "radius", None)
-        steering_w = getattr(self, "steering_w", None)
-        car_body = getattr(self, "car_body", None)
-
-        token = getattr(self, "token")
-
         url = (
-            f"https://auto.drom.ru/{brand}/{model}/used/"
-            f"?cid[]={city}&minprice={price_min}"
-            f"&maxprice={price_max}"
-            f"&minyear={year_min}&maxyear={year_max}"
-            f"&transmission={transmission}"
-            f"&mv={v_min}&xv={v_max}&distance={radius}"
-            f"&w={steering_w}&{car_body}"
+            f"https://auto.drom.ru/{self.brand}/{self.model}/used/"
+            f"?cid[]={self.city}&minprice={self.price_min}"
+            f"&maxprice={self.price_max}"
+            f"&minyear={self.year_min}&maxyear={self.year_max}"
+            f"&transmission={self.transmission}"
+            f"&mv={self.v_min}&xv={self.v_max}&distance={self.radius}"
+            f"&w={self.steering_w}&{self.car_body}"
         ).replace('None', '')
 
         yield scrapy.Request(url=url, headers={'User-Agent': self.user_agent}, callback=self.parse_item)
