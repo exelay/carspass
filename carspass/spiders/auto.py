@@ -4,7 +4,7 @@ import scrapy
 
 
 class AutoSpider(scrapy.Spider):
-    name = 'auto'
+    name = 'autoru'
     allowed_domains = ['auto.ru']
     user_agent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_0_0) AppleWebKit/537.36 (KHTML, like Gecko) " \
                  "Chrome/86.0.4240.198 Safari/537.36"
