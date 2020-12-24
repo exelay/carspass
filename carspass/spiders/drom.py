@@ -13,8 +13,8 @@ class DromSpider(scrapy.Spider):
         super(DromSpider, self).__init__(*args, **kwargs)
         self.token = getattr(self, "token")
 
-        self.brand = getattr(self, "brand")
-        self.model = getattr(self, "model")
+        self.brand = getattr(self, "brand", None)
+        self.model = getattr(self, "model", None)
 
         self.city = getattr(self, "city", 135)
         self.price_min = getattr(self, "price_min", None)
@@ -29,15 +29,36 @@ class DromSpider(scrapy.Spider):
         self.car_body = getattr(self, "car_body", None)
 
     def start_requests(self):
-        url = (
-            f"https://auto.drom.ru/{self.brand}/{self.model}/used/"
-            f"?cid[]={self.city}&minprice={self.price_min}"
-            f"&maxprice={self.price_max}"
-            f"&minyear={self.year_min}&maxyear={self.year_max}"
-            f"&transmission={self.transmission}"
-            f"&mv={self.v_min}&xv={self.v_max}&distance={self.radius}"
-            f"&w={self.steering_w}&{self.car_body}"
-        ).replace('None', '')
+        if self.brand and self.model:
+            url = (
+                f"https://auto.drom.ru/{self.brand}/{self.model}/used/"
+                f"?cid[]={self.city}&minprice={self.price_min}"
+                f"&maxprice={self.price_max}"
+                f"&minyear={self.year_min}&maxyear={self.year_max}"
+                f"&transmission={self.transmission}"
+                f"&mv={self.v_min}&xv={self.v_max}&distance={self.radius}"
+                f"&w={self.steering_w}&{self.car_body}"
+            ).replace('None', '')
+        elif self.brand:
+            url = (
+                f"https://auto.drom.ru/{self.brand}/used/"
+                f"?cid[]={self.city}&minprice={self.price_min}"
+                f"&maxprice={self.price_max}"
+                f"&minyear={self.year_min}&maxyear={self.year_max}"
+                f"&transmission={self.transmission}"
+                f"&mv={self.v_min}&xv={self.v_max}&distance={self.radius}"
+                f"&w={self.steering_w}&{self.car_body}"
+            ).replace('None', '')
+        else:
+            url = (
+                f"https://auto.drom.ru/used/"
+                f"?cid[]={self.city}&minprice={self.price_min}"
+                f"&maxprice={self.price_max}"
+                f"&minyear={self.year_min}&maxyear={self.year_max}"
+                f"&transmission={self.transmission}"
+                f"&mv={self.v_min}&xv={self.v_max}&distance={self.radius}"
+                f"&w={self.steering_w}&{self.car_body}"
+            ).replace('None', '')
 
         yield scrapy.Request(url=url, headers={'User-Agent': self.user_agent}, callback=self.parse_item)
 
