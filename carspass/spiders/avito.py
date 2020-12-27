@@ -10,11 +10,51 @@ class AvitoSpider(scrapy.Spider):
     user_agent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_0_0) AppleWebKit/537.36 (KHTML, like Gecko) " \
                  "Chrome/86.0.4240.198 Safari/537.36"
 
-    def start_requests(self):  # TODO add spider arguments and make a request with them
-        yield scrapy.Request(
-            url='https://www.avito.ru/sankt-peterburg/avtomobili/audi/100_2420-ASgBAgICAkTgtg3elyjitg3gmSg?cd=1',
-            headers={'User-Agent': self.user_agent}
-        )
+    def __init__(self, *args, **kwargs):
+        super(AvitoSpider, self).__init__(*args, **kwargs)
+        self.token = getattr(self, "token")
+
+        self.brand = getattr(self, "brand", None)
+        self.model = getattr(self, "model", None)
+
+        self.city = getattr(self, "city", 135)
+        self.price_min = getattr(self, "price_min", None)
+        self.price_max = getattr(self, "price_max", None)
+        self.year_min = getattr(self, "year_min", None)
+        self.year_max = getattr(self, "year_max", None)
+        self.transmission = getattr(self, "transmission", None)
+        self.v_min = getattr(self, "v_min", None)
+        self.v_max = getattr(self, "v_max", None)
+        self.radius = getattr(self, "radius", None)
+        self.steering_w = getattr(self, "steering_w", None)
+        self.car_body = getattr(self, "car_body", None)
+
+    def start_requests(self):
+        if self.brand and self.model:
+            url = (
+                f"https://www.avito.ru/"
+                f"{self.city}/avtomobili/s_probegom/"
+                f"{self.brand}/{self.model}"
+                f"?pmax={self.price_max}&pmin={self.price_min}"
+                f"&radius={self.radius}"
+            ).replace('None', '')
+        elif self.brand:
+            url = (
+                f"https://www.avito.ru/"
+                f"{self.city}/avtomobili/s_probegom/"
+                f"{self.brand}"
+                f"?pmax={self.price_max}&pmin={self.price_min}"
+                f"&radius={self.radius}"
+            ).replace('None', '')
+        else:
+            url = (
+                f"https://www.avito.ru/"
+                f"{self.city}/avtomobili/s_probegom/"
+                f"?pmax={self.price_max}&pmin={self.price_min}"
+                f"&radius={self.radius}"
+            ).replace('None', '')
+
+        yield scrapy.Request(url=url, headers={'User-Agent': self.user_agent}, callback=self.parse_item)
 
     @staticmethod
     def get_id(ad):
