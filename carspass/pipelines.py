@@ -4,6 +4,9 @@ from itemadapter import ItemAdapter
 
 class MongodbPipeline:
 
+    client = None
+    db = None
+
     def open_spider(self, spider):
         self.client = pymongo.MongoClient(
             "mongodb+srv://imdb:rowdy0987@carspass.mskrx.mongodb.net/<dbname>?retryWrites=true&w=majority"
