@@ -19,8 +19,8 @@ class YoulaSpider(scrapy.Spider):
         super(YoulaSpider, self).__init__(*args, **kwargs)
         self.token = getattr(self, "token")
 
-        self.brand = getattr(self, "brand")
-        self.model = getattr(self, "model")
+        self.brand = getattr(self, "brand", None)
+        self.model = getattr(self, "model", None)
 
         self.city = getattr(self, "city", "sankt-peterburg")
         self.price_min = getattr(self, "price_min", None)
@@ -35,7 +35,34 @@ class YoulaSpider(scrapy.Spider):
         self.car_body = getattr(self, "car_body", None)
 
     def start_requests(self):
-        url = f"https://auto.youla.ru/{self.city}/cars/used/{self.brand}/{self.model}/"
+        if self.brand and self.model:
+            url = (
+                f"https://am.ru/{self.city}/cars/used/{self.brand}/{self.model}/"
+                f"?priceMin={self.price_min}&priceMax={self.price_max}"
+                f"&yearMin={self.year_min}&yearMax={self.year_max}"
+                f"&gearTypes%5B0%5D={self.transmission}"
+                f"&engineVolumeMin={self.v_min}&engineVolumeMax={self.v_max}"
+                f"&wheelTypes%5B0%5D={self.steering_w}&bodyTypes%5B0%5D={self.car_body}"
+            ).replace('None', '')
+        elif self.brand:
+            url = (
+                f"https://am.ru/{self.city}/cars/used/{self.brand}/"
+                f"?priceMin={self.price_min}&priceMax={self.price_max}"
+                f"&yearMin={self.year_min}&yearMax={self.year_max}"
+                f"&gearTypes%5B0%5D={self.transmission}"
+                f"&engineVolumeMin={self.v_min}&engineVolumeMax={self.v_max}"
+                f"&wheelTypes%5B0%5D={self.steering_w}&bodyTypes%5B0%5D={self.car_body}"
+            ).replace('None', '')
+        else:
+            url = (
+                f"https://am.ru/{self.city}/cars/used/"
+                f"?priceMin={self.price_min}&priceMax={self.price_max}"
+                f"&yearMin={self.year_min}&yearMax={self.year_max}"
+                f"&gearTypes%5B0%5D={self.transmission}"
+                f"&engineVolumeMin={self.v_min}&engineVolumeMax={self.v_max}"
+                f"&wheelTypes%5B0%5D={self.steering_w}&bodyTypes%5B0%5D={self.car_body}"
+            ).replace('None', '')
+
         yield scrapy.Request(url=url, headers={'User-Agent': self.user_agent}, callback=self.parse_item)
 
     @staticmethod
