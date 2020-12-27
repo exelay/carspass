@@ -9,8 +9,54 @@ class AutoSpider(scrapy.Spider):
     user_agent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_0_0) AppleWebKit/537.36 (KHTML, like Gecko) " \
                  "Chrome/86.0.4240.198 Safari/537.36"
 
-    def start_requests(self):  # TODO add spider arguments and make a request with them
-        url = 'https://auto.ru/cars/audi/100/all/?sort=cr_date-desc'
+    def __init__(self, *args, **kwargs):
+        super(AutoSpider, self).__init__(*args, **kwargs)
+        self.token = getattr(self, "token")
+
+        self.brand = getattr(self, "brand", None)
+        self.model = getattr(self, "model", None)
+
+        self.city = getattr(self, "city", "sankt-peterburg")
+        self.price_min = getattr(self, "price_min", None)
+        self.price_max = getattr(self, "price_max", None)
+        self.year_min = getattr(self, "year_min", None)
+        self.year_max = getattr(self, "year_max", None)
+        self.transmission = getattr(self, "transmission", None)
+        self.v_min = getattr(self, "v_min", None)
+        self.v_max = getattr(self, "v_max", None)
+        self.radius = getattr(self, "radius", None)
+        self.steering_w = getattr(self, "steering_w", None)
+        self.car_body = getattr(self, "car_body", None)
+
+    def start_requests(self):
+        if self.brand and self.model:
+            url = (
+                f"https://auto.ru/{self.city}/cars/{self.brand}/{self.model}/used/"
+                f"?price_from={self.price_min}&price_to={self.price_max}"
+                f"&year_from={self.year_min}&year_to={self.year_max}"
+                f"&transmission={self.transmission}"
+                f"&displacement_from={self.v_min}&displacement_to={self.v_max}"
+                f"&steering_wheel={self.steering_w}&body_type_group={self.car_body}"
+            ).replace('None', '')
+        elif self.brand:
+            url = (
+                f"https://auto.ru/{self.city}/cars/{self.brand}/used/"
+                f"?price_from={self.price_min}&price_to={self.price_max}"
+                f"&year_from={self.year_min}&year_to={self.year_max}"
+                f"&transmission={self.transmission}"
+                f"&displacement_from={self.v_min}&displacement_to={self.v_max}"
+                f"&steering_wheel={self.steering_w}&body_type_group={self.car_body}"
+            ).replace('None', '')
+        else:
+            url = (
+                f"https://auto.ru/{self.city}/cars/used/"
+                f"?price_from={self.price_min}&price_to={self.price_max}"
+                f"&year_from={self.year_min}&year_to={self.year_max}"
+                f"&transmission={self.transmission}"
+                f"&displacement_from={self.v_min}&displacement_to={self.v_max}"
+                f"&steering_wheel={self.steering_w}&body_type_group={self.car_body}"
+            ).replace('None', '')
+
         yield scrapy.Request(url=url, headers={'User-Agent': self.user_agent}, callback=self.parse_item)
 
     @staticmethod
