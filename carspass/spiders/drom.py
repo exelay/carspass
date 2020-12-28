@@ -39,7 +39,7 @@ class DromSpider(scrapy.Spider):
                 f"&minyear={self.year_min}&maxyear={self.year_max}"
                 f"&transmission={self.transmission}"
                 f"&mv={self.v_min}&xv={self.v_max}&distance={self.radius}"
-                f"&w={self.steering_w}&{self.car_body}"
+                f"&w={self.steering_w}&{self.car_body}&inomarka={self.vendor}"
             ).replace('None', '')
         elif self.brand:
             url = (
@@ -49,7 +49,7 @@ class DromSpider(scrapy.Spider):
                 f"&minyear={self.year_min}&maxyear={self.year_max}"
                 f"&transmission={self.transmission}"
                 f"&mv={self.v_min}&xv={self.v_max}&distance={self.radius}"
-                f"&w={self.steering_w}&{self.car_body}"
+                f"&w={self.steering_w}&{self.car_body}&inomarka={self.vendor}"
             ).replace('None', '')
         else:
             url = (
@@ -59,7 +59,7 @@ class DromSpider(scrapy.Spider):
                 f"&minyear={self.year_min}&maxyear={self.year_max}"
                 f"&transmission={self.transmission}"
                 f"&mv={self.v_min}&xv={self.v_max}&distance={self.radius}"
-                f"&w={self.steering_w}&{self.car_body}"
+                f"&w={self.steering_w}&{self.car_body}&inomarka={self.vendor}"
             ).replace('None', '')
 
         yield scrapy.Request(url=url, headers={'User-Agent': self.user_agent}, callback=self.parse_item)
