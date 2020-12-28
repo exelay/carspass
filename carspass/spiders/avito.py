@@ -48,6 +48,14 @@ class AvitoSpider(scrapy.Spider):
                 f"?pmax={self.price_max}&pmin={self.price_min}"
                 f"&radius={self.radius}"
             ).replace('None', '')
+        elif self.vendor:
+            url = (
+                f"https://www.avito.ru/"
+                f"{self.city}/avtomobili/s_probegom/"
+                f"{self.vendor}"
+                f"?pmax={self.price_max}&pmin={self.price_min}"
+                f"&radius={self.radius}"
+            ).replace('None', '')
         else:
             url = (
                 f"https://www.avito.ru/"
