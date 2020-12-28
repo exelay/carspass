@@ -49,6 +49,15 @@ class AutoSpider(scrapy.Spider):
                 f"&displacement_from={self.v_min}&displacement_to={self.v_max}"
                 f"&steering_wheel={self.steering_w}&body_type_group={self.car_body}"
             ).replace('None', '')
+        elif self.vendor:
+            url = (
+                f"https://auto.ru/{self.city}/cars/{self.vendor}/used/"
+                f"?price_from={self.price_min}&price_to={self.price_max}"
+                f"&year_from={self.year_min}&year_to={self.year_max}"
+                f"&transmission={self.transmission}"
+                f"&displacement_from={self.v_min}&displacement_to={self.v_max}"
+                f"&steering_wheel={self.steering_w}&body_type_group={self.car_body}"
+            ).replace('None', '')
         else:
             url = (
                 f"https://auto.ru/{self.city}/cars/used/"
