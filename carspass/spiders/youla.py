@@ -33,6 +33,8 @@ class YoulaSpider(scrapy.Spider):
         self.radius = getattr(self, "radius", None)
         self.steering_w = getattr(self, "steering_w", None)
         self.car_body = getattr(self, "car_body", None)
+        self.vendor = getattr(self, "vendor", None)
+        self.latest_ads = getattr(self, "latest_ads", None)
 
     def start_requests(self):
         if self.brand and self.model:
