@@ -42,7 +42,7 @@ class YoulaSpider(scrapy.Spider):
                 f"https://am.ru/{self.city}/cars/used/{self.brand}/{self.model}/"
                 f"?priceMin={self.price_min}&priceMax={self.price_max}"
                 f"&yearMin={self.year_min}&yearMax={self.year_max}"
-                f"&gearTypes%5B0%5D={self.transmission}&brandOrigin={self.vendor}"
+                f"&gearTypes%5B0%5D={self.transmission}"
                 f"&engineVolumeMin={self.v_min}&engineVolumeMax={self.v_max}"
                 f"&wheelTypes%5B0%5D={self.steering_w}&bodyTypes%5B0%5D={self.car_body}"
             ).replace('None', '')
@@ -51,7 +51,7 @@ class YoulaSpider(scrapy.Spider):
                 f"https://am.ru/{self.city}/cars/used/{self.brand}/"
                 f"?priceMin={self.price_min}&priceMax={self.price_max}"
                 f"&yearMin={self.year_min}&yearMax={self.year_max}"
-                f"&gearTypes%5B0%5D={self.transmission}&brandOrigin={self.vendor}"
+                f"&gearTypes%5B0%5D={self.transmission}"
                 f"&engineVolumeMin={self.v_min}&engineVolumeMax={self.v_max}"
                 f"&wheelTypes%5B0%5D={self.steering_w}&bodyTypes%5B0%5D={self.car_body}"
             ).replace('None', '')
