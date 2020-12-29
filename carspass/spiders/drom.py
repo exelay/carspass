@@ -1,4 +1,7 @@
+import yaml
 import logging
+from datetime import datetime
+from dateutil.parser import parse
 
 import scrapy
 
@@ -80,6 +83,34 @@ class DromSpider(scrapy.Spider):
             logging.debug(f"Failed to get image link. {e}")
 
     @staticmethod
+    def get_publish_date(ad):
+        try:
+            with open('conventions.yaml') as f:
+                month_nums = yaml.load(f, Loader=yaml.FullLoader)['month_nums']
+            date = ad.xpath('.//div[@data-ftid="bull_date"]/text()').get()
+            day = date.split()[0]
+            try:
+                month = date.split()[1]
+            except IndexError:
+                month = 'empty'
+            month_num = month_nums.get(month[:3])
+            if not month_num:
+                if day.startswith('час'):
+                    hours = int(day)
+                    unix_time = datetime.timestamp(datetime.today())
+                    unix_time -= hours * 3600
+                elif day.startswith('мин'):
+                    minute = int(day)
+                    unix_time = datetime.timestamp(datetime.today())
+                    unix_time -= minute * 60
+                else:
+                    unix_time = datetime.timestamp(datetime.today())
+                return datetime.fromtimestamp(unix_time).isoformat()
+            return parse(f"{day}.{month_num}").isoformat()
+        except Exception as e:
+            logging.debug(f'Could not find publish date. Unexpected error: {e}')
+
+    @staticmethod
     def get_title(ad):
         try:
             return ad.xpath('.//span[@data-ftid="bull_title"]/text()').get()
@@ -130,7 +161,7 @@ class DromSpider(scrapy.Spider):
             yield {
                 'id': self.get_id(ad),
                 'img_link': self.get_img_link(ad),
-                'publish_date': '',
+                'publish_date': self.get_publish_date(ad),
                 'title': self.get_title(ad),
                 'price': self.get_price(ad),
                 'mileage': self.get_mileage(ad),
