@@ -149,6 +149,6 @@ class AutoSpider(scrapy.Spider):
                 'source': 'auto',
             }
 
-        next_page = response.xpath('//a[contains(@class, "ListingPagination-module__next")]/@href').get()
-        if next_page:
-            yield scrapy.Request(url=next_page, headers={'User-Agent': self.user_agent}, callback=self.parse_item)
+        # next_page = response.xpath('//a[contains(@class, "ListingPagination-module__next")]/@href').get()
+        # if next_page:
+        #     yield scrapy.Request(url=next_page, headers={'User-Agent': self.user_agent}, callback=self.parse_item)

@@ -141,6 +141,6 @@ class DromSpider(scrapy.Spider):
                 'source': 'drom',
             }
 
-        next_page = response.xpath('//a[@data-ftid="component_pagination-item-next"]/@href').get()
-        if next_page:
-            yield scrapy.Request(url=next_page, headers={'User-Agent': self.user_agent}, callback=self.parse_item)
+        # next_page = response.xpath('//a[@data-ftid="component_pagination-item-next"]/@href').get()
+        # if next_page:
+        #     yield scrapy.Request(url=next_page, headers={'User-Agent': self.user_agent}, callback=self.parse_item)
