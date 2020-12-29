@@ -1,4 +1,5 @@
 import logging
+from requests import PreparedRequest
 
 import scrapy
 
@@ -31,42 +32,30 @@ class AutoSpider(scrapy.Spider):
         self.latest_ads = getattr(self, "latest_ads", None)
 
     def start_requests(self):
+        req = PreparedRequest()
+        params = {
+            'pmin': self.price_min,
+            'pmax': self.price_max,
+            'radius': self.radius,
+        }
+        proxy_url = "https://app.scrapingbee.com/api/v1/"
         if self.brand and self.model:
-            url = (
-                f"https://auto.ru/{self.city}/cars/{self.brand}/{self.model}/used/"
-                f"?price_from={self.price_min}&price_to={self.price_max}"
-                f"&year_from={self.year_min}&year_to={self.year_max}"
-                f"&transmission={self.transmission}"
-                f"&displacement_from={self.v_min}&displacement_to={self.v_max}"
-                f"&steering_wheel={self.steering_w}&body_type_group={self.car_body}"
-            ).replace('None', '')
+            abs_url = f"https://auto.ru/{self.city}/cars/{self.brand}/{self.model}/used/"
         elif self.brand:
-            url = (
-                f"https://auto.ru/{self.city}/cars/{self.brand}/used/"
-                f"?price_from={self.price_min}&price_to={self.price_max}"
-                f"&year_from={self.year_min}&year_to={self.year_max}"
-                f"&transmission={self.transmission}"
-                f"&displacement_from={self.v_min}&displacement_to={self.v_max}"
-                f"&steering_wheel={self.steering_w}&body_type_group={self.car_body}"
-            ).replace('None', '')
+            abs_url = f"https://auto.ru/{self.city}/cars/{self.brand}/used/"
         elif self.vendor:
-            url = (
-                f"https://auto.ru/{self.city}/cars/{self.vendor}/used/"
-                f"?price_from={self.price_min}&price_to={self.price_max}"
-                f"&year_from={self.year_min}&year_to={self.year_max}"
-                f"&transmission={self.transmission}"
-                f"&displacement_from={self.v_min}&displacement_to={self.v_max}"
-                f"&steering_wheel={self.steering_w}&body_type_group={self.car_body}"
-            ).replace('None', '')
+            abs_url = f"https://auto.ru/{self.city}/cars/{self.vendor}/used/"
         else:
-            url = (
-                f"https://auto.ru/{self.city}/cars/used/"
-                f"?price_from={self.price_min}&price_to={self.price_max}"
-                f"&year_from={self.year_min}&year_to={self.year_max}"
-                f"&transmission={self.transmission}"
-                f"&displacement_from={self.v_min}&displacement_to={self.v_max}"
-                f"&steering_wheel={self.steering_w}&body_type_group={self.car_body}"
-            ).replace('None', '')
+            abs_url = f"https://auto.ru/{self.city}/cars/used/"
+        req.prepare_url(abs_url, params)
+        target_url = req.url
+        proxy_params = {
+            "api_key": "EHW1NW8Y19PCOMPHBDARWQ2A1BOS6GIDEP9ZBWAWUXX6BUE0PIIL94PUW813WY6LISV941770L7R2U4B",
+            "url": target_url,
+            "render_js": "false",
+        }
+        req.prepare_url(proxy_url, proxy_params)
+        url = req.url
 
         yield scrapy.Request(url=url, headers={'User-Agent': self.user_agent}, callback=self.parse_item)
 

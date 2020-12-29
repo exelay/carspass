@@ -1,5 +1,6 @@
 import json
 import logging
+from requests import PreparedRequest
 
 import scrapy
 
@@ -17,7 +18,7 @@ class AvitoSpider(scrapy.Spider):
         self.brand = getattr(self, "brand", None)
         self.model = getattr(self, "model", None)
 
-        self.city = getattr(self, "city", 135)
+        self.city = getattr(self, "city", 'sankt-peterburg')
         self.price_min = getattr(self, "price_min", None)
         self.price_max = getattr(self, "price_max", None)
         self.year_min = getattr(self, "year_min", None)
@@ -32,37 +33,30 @@ class AvitoSpider(scrapy.Spider):
         self.latest_ads = getattr(self, "latest_ads", None)
 
     def start_requests(self):
+        req = PreparedRequest()
+        params = {
+            'pmin': self.price_min,
+            'pmax': self.price_max,
+            'radius': self.radius,
+        }
+        proxy_url = "https://app.scrapingbee.com/api/v1/"
         if self.brand and self.model:
-            url = (
-                f"https://www.avito.ru/"
-                f"{self.city}/avtomobili/s_probegom/"
-                f"{self.brand}/{self.model}"
-                f"?pmax={self.price_max}&pmin={self.price_min}"
-                f"&radius={self.radius}"
-            ).replace('None', '')
+            abs_url = f"https://www.avito.ru/{self.city}/avtomobili/s_probegom/{self.brand}/{self.model}"
         elif self.brand:
-            url = (
-                f"https://www.avito.ru/"
-                f"{self.city}/avtomobili/s_probegom/"
-                f"{self.brand}"
-                f"?pmax={self.price_max}&pmin={self.price_min}"
-                f"&radius={self.radius}"
-            ).replace('None', '')
+            abs_url = f"https://www.avito.ru/{self.city}/avtomobili/s_probegom/{self.brand}"
         elif self.vendor:
-            url = (
-                f"https://www.avito.ru/"
-                f"{self.city}/avtomobili/s_probegom/"
-                f"{self.vendor}"
-                f"?pmax={self.price_max}&pmin={self.price_min}"
-                f"&radius={self.radius}"
-            ).replace('None', '')
+            abs_url = f"https://www.avito.ru/{self.city}/avtomobili/s_probegom/{self.vendor}"
         else:
-            url = (
-                f"https://www.avito.ru/"
-                f"{self.city}/avtomobili/s_probegom/"
-                f"?pmax={self.price_max}&pmin={self.price_min}"
-                f"&radius={self.radius}"
-            ).replace('None', '')
+            abs_url = f"https://www.avito.ru/{self.city}/avtomobili/s_probegom/"
+        req.prepare_url(abs_url, params)
+        target_url = req.url
+        proxy_params = {
+            "api_key": "EHW1NW8Y19PCOMPHBDARWQ2A1BOS6GIDEP9ZBWAWUXX6BUE0PIIL94PUW813WY6LISV941770L7R2U4B",
+            "url": target_url,
+            "render_js": "false",
+        }
+        req.prepare_url(proxy_url, proxy_params)
+        url = req.url
 
         yield scrapy.Request(url=url, headers={'User-Agent': self.user_agent}, callback=self.parse_item)
 
