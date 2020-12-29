@@ -139,7 +139,7 @@ class YoulaSpider(scrapy.Spider):
             yield {
                 'id': self.get_id(ad),
                 'img_link': self.get_img_link(ad),
-                'publish_date': '',
+                'publish_date': self.get_publish_date(ad),
                 'title': self.get_title(ad),
                 'price': self.get_price(ad),
                 'mileage': self.get_mileage(ad),
