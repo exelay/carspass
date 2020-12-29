@@ -5,6 +5,7 @@ import logging
 
 from datetime import datetime
 from urllib.parse import unquote
+from requests import PreparedRequest
 
 import scrapy
 
@@ -37,33 +38,26 @@ class YoulaSpider(scrapy.Spider):
         self.latest_ads = getattr(self, "latest_ads", None)
 
     def start_requests(self):
+        req = PreparedRequest()
+        params = {
+            'priceMin': self.price_min,
+            'priceMax': self.price_max,
+            'yearMin': self.year_min,
+            'yearMax': self.year_max,
+            'gearTypes[0]': self.transmission,
+            'engineVolumeMin': self.v_min,
+            'engineVolumeMax': self.v_max,
+            'wheelTypes[0]': self.steering_w,
+            'bodyTypes[0]': self.car_body,
+        }
         if self.brand and self.model:
-            url = (
-                f"https://am.ru/{self.city}/cars/used/{self.brand}/{self.model}/"
-                f"?priceMin={self.price_min}&priceMax={self.price_max}"
-                f"&yearMin={self.year_min}&yearMax={self.year_max}"
-                f"&gearTypes%5B0%5D={self.transmission}"
-                f"&engineVolumeMin={self.v_min}&engineVolumeMax={self.v_max}"
-                f"&wheelTypes%5B0%5D={self.steering_w}&bodyTypes%5B0%5D={self.car_body}"
-            ).replace('None', '')
+            abs_url = f"https://am.ru/{self.city}/cars/used/{self.brand}/{self.model}/"
         elif self.brand:
-            url = (
-                f"https://am.ru/{self.city}/cars/used/{self.brand}/"
-                f"?priceMin={self.price_min}&priceMax={self.price_max}"
-                f"&yearMin={self.year_min}&yearMax={self.year_max}"
-                f"&gearTypes%5B0%5D={self.transmission}"
-                f"&engineVolumeMin={self.v_min}&engineVolumeMax={self.v_max}"
-                f"&wheelTypes%5B0%5D={self.steering_w}&bodyTypes%5B0%5D={self.car_body}"
-            ).replace('None', '')
+            abs_url = f"https://am.ru/{self.city}/cars/used/{self.brand}/"
         else:
-            url = (
-                f"https://am.ru/{self.city}/cars/used/"
-                f"?priceMin={self.price_min}&priceMax={self.price_max}"
-                f"&yearMin={self.year_min}&yearMax={self.year_max}"
-                f"&gearTypes%5B0%5D={self.transmission}&brandOrigin={self.vendor}"
-                f"&engineVolumeMin={self.v_min}&engineVolumeMax={self.v_max}"
-                f"&wheelTypes%5B0%5D={self.steering_w}&bodyTypes%5B0%5D={self.car_body}"
-            ).replace('None', '')
+            abs_url = f"https://am.ru/{self.city}/cars/used/"
+        req.prepare_url(abs_url, params)
+        url = req.url
 
         yield scrapy.Request(url=url, headers={'User-Agent': self.user_agent}, callback=self.parse_item)
 
