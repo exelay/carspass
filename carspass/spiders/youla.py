@@ -148,7 +148,7 @@ class YoulaSpider(scrapy.Spider):
                 'metro': '',
                 'link': self.get_link(ad),
                 'actual': True,
-                'source': 'youla',
+                'source': 'amru',
             }
 
         # next_page = response.xpath('//a[.//span[contains(text(), "Вперед")]]/@href').get()
