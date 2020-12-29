@@ -14,7 +14,8 @@ NEWSPIDER_MODULE = 'carspass.spiders'
 
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
-#USER_AGENT = 'carspass (+http://www.yourdomain.com)'
+USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_0_0) AppleWebKit/537.36 (KHTML, like Gecko)" \
+             " Chrome/86.0.4240.198 Safari/537.36"
 
 # Obey robots.txt rules
 ROBOTSTXT_OBEY = False
