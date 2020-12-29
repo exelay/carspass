@@ -89,7 +89,8 @@ class DromSpider(scrapy.Spider):
     @staticmethod
     def get_price(ad):
         try:
-            return ad.xpath('.//span[@data-ftid="bull_price"]/text()').get()
+            price = ad.xpath('.//span[@data-ftid="bull_price"]/text()').get().replace(' ', '')
+            return int(price)
         except Exception as e:
             logging.debug(f"Failed to get price. {e}")
 
