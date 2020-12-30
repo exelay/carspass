@@ -10,6 +10,9 @@ class AvitoSpider(scrapy.Spider):
     allowed_domains = ['avito.ru']
     user_agent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_0_0) AppleWebKit/537.36 (KHTML, like Gecko) " \
                  "Chrome/86.0.4240.198 Safari/537.36"
+    url = str()
+    page_number = 1
+    proxy_url = "https://app.scrapingbee.com/api/v1/"
 
     def __init__(self, *args, **kwargs):
         super(AvitoSpider, self).__init__(*args, **kwargs)
@@ -39,7 +42,6 @@ class AvitoSpider(scrapy.Spider):
             'pmax': self.price_max,
             'radius': self.radius,
         }
-        proxy_url = "https://app.scrapingbee.com/api/v1/"
         if self.brand and self.model:
             abs_url = f"https://www.avito.ru/{self.city}/avtomobili/s_probegom/{self.brand}/{self.model}"
         elif self.brand:
@@ -49,13 +51,13 @@ class AvitoSpider(scrapy.Spider):
         else:
             abs_url = f"https://www.avito.ru/{self.city}/avtomobili/s_probegom/"
         req.prepare_url(abs_url, params)
-        target_url = req.url
+        self.url = req.url
         proxy_params = {
             "api_key": "EHW1NW8Y19PCOMPHBDARWQ2A1BOS6GIDEP9ZBWAWUXX6BUE0PIIL94PUW813WY6LISV941770L7R2U4B",
-            "url": target_url,
+            "url": self.url,
             "render_js": "false",
         }
-        req.prepare_url(proxy_url, proxy_params)
+        req.prepare_url(self.proxy_url, proxy_params)
         url = req.url
 
         yield scrapy.Request(url=url, headers={'User-Agent': self.user_agent}, callback=self.parse_item)
@@ -140,3 +142,16 @@ class AvitoSpider(scrapy.Spider):
                 'actual': True,
                 'source': 'avito',
             }
+        req = PreparedRequest()
+        self.page_number += 1
+        req.prepare_url(self.url, {'p': self.page_number})
+        next_page = req.url
+        proxy_params = {
+            "api_key": "EHW1NW8Y19PCOMPHBDARWQ2A1BOS6GIDEP9ZBWAWUXX6BUE0PIIL94PUW813WY6LISV941770L7R2U4B",
+            "url": next_page,
+            "render_js": "false",
+        }
+        req.prepare_url(self.proxy_url, proxy_params)
+        url = req.url
+        if self.page_number <= 2:
+            yield scrapy.Request(url=url, callback=self.parse_item, dont_filter=True)
