@@ -151,8 +151,8 @@ class YoulaSpider(scrapy.Spider):
                 'source': 'amru',
             }
 
-        # next_page = response.xpath('//a[.//span[contains(text(), "Вперед")]]/@href').get()
-        # if next_page:
-        #     absolute_url = f'https://auto.youla.ru{next_page}'
-        #     yield scrapy.Request(url=absolute_url, headers={'User-Agent': self.user_agent},
-        #                          callback=self.parse_item)
+        next_page = response.xpath('//a[.//span[contains(text(), "Вперед")]]/@href').get()
+        page_number = int(next_page.split('/')[-1][6])
+        if next_page and page_number <= 5:
+            absolute_url = f'https://auto.youla.ru{next_page}'
+            yield scrapy.Request(url=absolute_url, callback=self.parse_item)
