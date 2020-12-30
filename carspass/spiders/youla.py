@@ -1,5 +1,4 @@
 import re
-import pytz
 import json
 import logging
 
@@ -78,9 +77,8 @@ class YoulaSpider(scrapy.Spider):
     @staticmethod
     def get_publish_date(ad):
         try:
-            tz_moscow = pytz.timezone('Europe/Moscow')
             unix_time = int(ad[1][11][2:]) // 1000
-            return datetime.fromtimestamp(unix_time, tz=tz_moscow).isoformat()
+            return datetime.fromtimestamp(unix_time).isoformat()
         except Exception as e:
             logging.debug(f"Failed to get publish date. {e}")
 
