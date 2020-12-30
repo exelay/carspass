@@ -7,8 +7,6 @@ import scrapy
 class AutoSpider(scrapy.Spider):
     name = 'autoru'
     allowed_domains = ['auto.ru']
-    user_agent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_0_0) AppleWebKit/537.36 (KHTML, like Gecko) " \
-                 "Chrome/86.0.4240.198 Safari/537.36"
 
     def __init__(self, *args, **kwargs):
         super(AutoSpider, self).__init__(*args, **kwargs)
@@ -49,7 +47,7 @@ class AutoSpider(scrapy.Spider):
         req.prepare_url(abs_url, params)
         url = req.url
 
-        yield scrapy.Request(url=url, headers={'User-Agent': self.user_agent}, callback=self.parse_item)
+        yield scrapy.Request(url=url, callback=self.parse_item)
 
     @staticmethod
     def get_id(ad):
