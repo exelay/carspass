@@ -9,8 +9,6 @@ import scrapy
 class DromSpider(scrapy.Spider):
     name = 'drom'
     allowed_domains = ['drom.ru']
-    user_agent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_0_0) AppleWebKit/537.36 (KHTML, like Gecko) " \
-                 "Chrome/86.0.4240.198 Safari/537.36"
 
     def __init__(self, *args, **kwargs):
         super(DromSpider, self).__init__(*args, **kwargs)
@@ -65,7 +63,7 @@ class DromSpider(scrapy.Spider):
                 f"&w={self.steering_w}&{self.car_body}&inomarka={self.vendor}"
             ).replace('None', '')
 
-        yield scrapy.Request(url=url, headers={'User-Agent': self.user_agent}, callback=self.parse_item)
+        yield scrapy.Request(url=url, callback=self.parse_item)
 
     @staticmethod
     def get_id(ad):
@@ -173,6 +171,7 @@ class DromSpider(scrapy.Spider):
                 'source': 'drom',
             }
 
-        # next_page = response.xpath('//a[@data-ftid="component_pagination-item-next"]/@href').get()
-        # if next_page:
-        #     yield scrapy.Request(url=next_page, headers={'User-Agent': self.user_agent}, callback=self.parse_item)
+        next_page = response.xpath('//a[@data-ftid="component_pagination-item-next"]/@href').get()
+        page_number = int(next_page.split('/')[-2][-1])
+        if next_page and page_number <= 5:
+            yield scrapy.Request(url=next_page, callback=self.parse_item)
