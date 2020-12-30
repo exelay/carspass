@@ -38,7 +38,6 @@ class AutoSpider(scrapy.Spider):
             'pmax': self.price_max,
             'radius': self.radius,
         }
-        proxy_url = "https://app.scrapingbee.com/api/v1/"
         if self.brand and self.model:
             abs_url = f"https://auto.ru/{self.city}/cars/{self.brand}/{self.model}/used/"
         elif self.brand:
@@ -48,13 +47,6 @@ class AutoSpider(scrapy.Spider):
         else:
             abs_url = f"https://auto.ru/{self.city}/cars/used/"
         req.prepare_url(abs_url, params)
-        target_url = req.url
-        proxy_params = {
-            "api_key": "EHW1NW8Y19PCOMPHBDARWQ2A1BOS6GIDEP9ZBWAWUXX6BUE0PIIL94PUW813WY6LISV941770L7R2U4B",
-            "url": target_url,
-            "render_js": "false",
-        }
-        req.prepare_url(proxy_url, proxy_params)
         url = req.url
 
         yield scrapy.Request(url=url, headers={'User-Agent': self.user_agent}, callback=self.parse_item)
