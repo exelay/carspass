@@ -4,61 +4,21 @@ import logging
 
 from datetime import datetime
 from urllib.parse import unquote
-from requests import PreparedRequest
 
 import scrapy
 
 
 class YoulaSpider(scrapy.Spider):
     name = 'amru'
-    allowed_domains = ['youla.ru']
-    user_agent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_0_0) AppleWebKit/537.36 (KHTML, like Gecko) " \
-                 "Chrome/86.0.4240.198 Safari/537.36"
+    allowed_domains = ['youla.ru', 'am.ru']
 
-    def __init__(self, *args, **kwargs):
-        super(YoulaSpider, self).__init__(*args, **kwargs)
-        self.token = getattr(self, "token")
-
-        self.brand = getattr(self, "brand", None)
-        self.model = getattr(self, "model", None)
-
-        self.city = getattr(self, "city", "sankt-peterburg")
-        self.price_min = getattr(self, "price_min", None)
-        self.price_max = getattr(self, "price_max", None)
-        self.year_min = getattr(self, "year_min", None)
-        self.year_max = getattr(self, "year_max", None)
-        self.transmission = getattr(self, "transmission", None)
-        self.v_min = getattr(self, "v_min", None)
-        self.v_max = getattr(self, "v_max", None)
-        self.radius = getattr(self, "radius", None)
-        self.steering_w = getattr(self, "steering_w", None)
-        self.car_body = getattr(self, "car_body", None)
-        self.vendor = getattr(self, "vendor", None)
-        self.latest_ads = getattr(self, "latest_ads", None)
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.scraping_time = datetime.today().date().isoformat()
 
     def start_requests(self):
-        req = PreparedRequest()
-        params = {
-            'priceMin': self.price_min,
-            'priceMax': self.price_max,
-            'yearMin': self.year_min,
-            'yearMax': self.year_max,
-            'gearTypes[0]': self.transmission,
-            'engineVolumeMin': self.v_min,
-            'engineVolumeMax': self.v_max,
-            'wheelTypes[0]': self.steering_w,
-            'bodyTypes[0]': self.car_body,
-        }
-        if self.brand and self.model:
-            abs_url = f"https://am.ru/{self.city}/cars/used/{self.brand}/{self.model}/"
-        elif self.brand:
-            abs_url = f"https://am.ru/{self.city}/cars/used/{self.brand}/"
-        else:
-            abs_url = f"https://am.ru/{self.city}/cars/used/"
-        req.prepare_url(abs_url, params)
-        url = req.url
-
-        yield scrapy.Request(url=url, headers={'User-Agent': self.user_agent}, callback=self.parse_item)
+        url = 'https://auto.youla.ru/rossiya/cars/used/?publication=1'
+        yield scrapy.Request(url=url, callback=self.parse_item)
 
     @staticmethod
     def get_id(ad):
@@ -150,7 +110,6 @@ class YoulaSpider(scrapy.Spider):
             }
 
         next_page = response.xpath('//a[.//span[contains(text(), "Вперед")]]/@href').get()
-        page_number = int(next_page.split('/')[-1][6])
-        if next_page and page_number <= 5:
+        if next_page:
             absolute_url = f'https://auto.youla.ru{next_page}'
             yield scrapy.Request(url=absolute_url, callback=self.parse_item)
