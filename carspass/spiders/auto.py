@@ -13,7 +13,7 @@ class AutoSpider(scrapy.Spider):
         self.scraping_time = datetime.today().date().isoformat()
 
     def start_requests(self):
-        url = 'https://auto.ru/sankt-peterburg/cars/used/?page=99&sort=cr_date-desc&top_days=1'
+        url = 'https://auto.ru/sankt-peterburg/cars/used/?sort=cr_date-desc&top_days=1'
         yield scrapy.Request(url=url, callback=self.parse_item)
 
     @staticmethod
