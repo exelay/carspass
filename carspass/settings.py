@@ -32,30 +32,30 @@ ROBOTSTXT_OBEY = False
 # CONCURRENT_REQUESTS_PER_IP = 5
 
 # Disable cookies (enabled by default)
-#COOKIES_ENABLED = False
+# COOKIES_ENABLED = True
 
 # Disable Telnet Console (enabled by default)
 #TELNETCONSOLE_ENABLED = False
 
+COOKIES_DEBUG = True
+
 # Override the default request headers:
-DEFAULT_REQUEST_HEADERS = {
-    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/"
-              "apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
-    "Cookie": "_csrf_token=072e78d64aaa00059e347bb6f08cc1ec233e274bdb3e9303; "
-              "suid=62d66ddf8744e5905ddb28c71e252964.bb3de41a5069195d6e9a472c32784fae; "
-              "from=direct; _ym_uid=16025271801045893798; bltsr=1; yandexuid=5324645381598645529; "
-              "my=YwA%3D; gdpr=0; gids=213; gradius=1000; mmm-search-accordion-is-open-cars=%5B0%5D; "
-              "pro_avto_popup=closed; yuidlt=1; "
-              "autoru_sid=a%3Ag5f9984df22n2pejuqk1j1s6271ed0oa.e864bdc97bfbcd4651c8ea3f75f70ade%7C1605106143960.604800."
-              "mfd1CLI3jQBtrQCt05Ft2A.vQ53nxCy62tk33W6IAh1_Vu3lExMX79IVL2f9Jo4z6E; "
-              "crookie=PnWKG85CKJZVTexFSQo9V3rlbxplIHaIaMgIasyAvanzqQhJnWx25cAlio0uu86YINYoPeKIIJbV3FoOvGpycwnmyWc=; "
-              "cmtchd=MTYwNTAxMDc0NzIzOA==; "
-              "autoruuid=g5f9984df22n2pejuqk1j1s6271ed0oa.e864bdc97bfbcd4651c8ea3f75f70ade; "
-              "yuidcs=1; parts_ur=; _ym_isad=1; autoru_gdpr=1; X-Vertis-DC=sas; proven_owner_popup=closed; "
-              "_ym_visorc_22753222=b; from_lifetime=1605276065824; _ym_d=1605276066,",
-    "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 "
-                  "(KHTML, like Gecko) Chrome/85.0.4183.121 Safari/537.36",
-}
+# DEFAULT_REQUEST_HEADERS = {
+#     "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/"
+#               "apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
+#     "cookie": "yandexuid=5324645381598645529; yuidss=5324645381598645529; "
+#               "ymex=1914005529.yrts.1598645529#1914005529.yrtsi.1598645529; _ym_uid=1598869015161464602; "
+#               "my=YwA=; gdpr=0; yandex_login=alexeykirpa; yabs-sid=1955603231602190189; "
+#               "i=MegyYOZZz6WdDgHuRhybzKC8ej3WehyQR/+LNFrUkVb0wQV9BvpAkr9GpkeM4WA35dZMTIJ/XjOlRJQQVaFjVCNSQZc=; "
+#               "_ym_d=1606568652; yabs-frequency=/5/0W000EgQZLy00000/vdUmS9K00010FY1C1NDmb000040-8Ki5St2K0000G3uX/; "
+#               "is_gdpr=0; is_gdpr_b=CLuMORDGDygC; HOhdORSx=1; "
+#               "ys=udn.cDrQkNC70LXQutGB0LXQuSDQmtC40YDQv9Cw#c_chck.56096774; "
+#               "Session_id=3:1610022364.5.0.1599834695875:Nh25XQ:4.1|555458220.0.2|228431.196368."
+#               "swu8rspoyqSUAJvuXc87Mz6ZuqQ; sessionid2=3:1610022364.5.0.1599834695875:Nh25XQ:4.1|555458220.0.2|"
+#               "228431.147426.s7pyWgXj0FCKZcDABnf8mnW8xGE",
+#     "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 "
+#                   "(KHTML, like Gecko) Chrome/85.0.4183.121 Safari/537.36",
+# }
 
 # Enable or disable spider middlewares
 # See https://docs.scrapy.org/en/latest/topics/spider-middleware.html
