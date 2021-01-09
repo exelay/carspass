@@ -1,3 +1,6 @@
+import schedule
+import time
+
 from scrapy.crawler import CrawlerProcess
 from scrapy.utils.project import get_project_settings
 
@@ -13,4 +16,7 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    schedule.every().hour.do(main)
+    while True:
+        schedule.run_pending()
+        time.sleep(1)
