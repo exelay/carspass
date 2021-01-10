@@ -1,3 +1,4 @@
+import logging
 import schedule
 import time
 
@@ -22,4 +23,4 @@ if __name__ == '__main__':
             schedule.run_pending()
             time.sleep(1)
         except Exception as e:
-            print(str(e))
+            logging.error(f"Unexpected error: {e}")
