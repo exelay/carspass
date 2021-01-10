@@ -12,10 +12,6 @@ class YoulaSpider(scrapy.Spider):
     name = 'amru'
     allowed_domains = ['youla.ru', 'am.ru']
 
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.scraping_time = datetime.today().date().isoformat()
-
     def start_requests(self):
         url = 'https://auto.youla.ru/rossiya/cars/used/?publication=1'
         yield scrapy.Request(url=url, callback=self.parse_item)
@@ -108,8 +104,3 @@ class YoulaSpider(scrapy.Spider):
                 'actual': True,
                 'source': 'amru',
             }
-
-        next_page = response.xpath('//a[.//span[contains(text(), "Вперед")]]/@href').get()
-        if next_page:
-            absolute_url = f'https://auto.youla.ru{next_page}'
-            yield scrapy.Request(url=absolute_url, callback=self.parse_item)
