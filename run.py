@@ -10,6 +10,8 @@ def job():
     process = CrawlerProcess(get_project_settings())
     process.crawl('amru')
     process.crawl('autoru')
+    process.crawl('drom')
+    process.crawl('avito')
 
     process.start()
 
