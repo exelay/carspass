@@ -18,7 +18,7 @@ class MongodbPipeline:
         self.client.close()
 
     def process_item(self, item, spider):
-        collection_name = spider.scraping_time
+        collection_name = spider.name
         if not self.collection.count_documents({'id': item['id']}):
             self.db[collection_name].insert_one(item)
         return item
