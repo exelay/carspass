@@ -10,59 +10,8 @@ class DromSpider(scrapy.Spider):
     name = 'drom'
     allowed_domains = ['drom.ru']
 
-    def __init__(self, *args, **kwargs):
-        super(DromSpider, self).__init__(*args, **kwargs)
-        self.token = getattr(self, "token")
-
-        self.brand = getattr(self, "brand", None)
-        self.model = getattr(self, "model", None)
-
-        self.city = getattr(self, "city", 135)
-        self.price_min = getattr(self, "price_min", None)
-        self.price_max = getattr(self, "price_max", None)
-        self.year_min = getattr(self, "year_min", None)
-        self.year_max = getattr(self, "year_max", None)
-        self.transmission = getattr(self, "transmission", None)
-        self.v_min = getattr(self, "v_min", None)
-        self.v_max = getattr(self, "v_max", None)
-        self.radius = getattr(self, "radius", None)
-        self.steering_w = getattr(self, "steering_w", None)
-        self.car_body = getattr(self, "car_body", None)
-        self.vendor = getattr(self, "vendor", None)
-        self.latest_ads = getattr(self, "latest_ads", None)
-
     def start_requests(self):
-        if self.brand and self.model:
-            url = (
-                f"https://auto.drom.ru/{self.brand}/{self.model}/used/"
-                f"?cid[]={self.city}&minprice={self.price_min}"
-                f"&maxprice={self.price_max}"
-                f"&minyear={self.year_min}&maxyear={self.year_max}"
-                f"&transmission={self.transmission}"
-                f"&mv={self.v_min}&xv={self.v_max}&distance={self.radius}"
-                f"&w={self.steering_w}&{self.car_body}"
-            ).replace('None', '')
-        elif self.brand:
-            url = (
-                f"https://auto.drom.ru/{self.brand}/used/"
-                f"?cid[]={self.city}&minprice={self.price_min}"
-                f"&maxprice={self.price_max}"
-                f"&minyear={self.year_min}&maxyear={self.year_max}"
-                f"&transmission={self.transmission}"
-                f"&mv={self.v_min}&xv={self.v_max}&distance={self.radius}"
-                f"&w={self.steering_w}&{self.car_body}"
-            ).replace('None', '')
-        else:
-            url = (
-                f"https://auto.drom.ru/used/"
-                f"?cid[]={self.city}&minprice={self.price_min}"
-                f"&maxprice={self.price_max}"
-                f"&minyear={self.year_min}&maxyear={self.year_max}"
-                f"&transmission={self.transmission}"
-                f"&mv={self.v_min}&xv={self.v_max}&distance={self.radius}"
-                f"&w={self.steering_w}&{self.car_body}&inomarka={self.vendor}"
-            ).replace('None', '')
-
+        url = 'https://spb.drom.ru/auto/used/all/'
         yield scrapy.Request(url=url, callback=self.parse_item)
 
     @staticmethod
@@ -170,8 +119,3 @@ class DromSpider(scrapy.Spider):
                 'actual': True if self.get_title(ad) else False,
                 'source': 'drom',
             }
-
-        next_page = response.xpath('//a[@data-ftid="component_pagination-item-next"]/@href').get()
-        page_number = int(next_page.split('/')[-2][-1])
-        if next_page and page_number <= 5:
-            yield scrapy.Request(url=next_page, callback=self.parse_item)
