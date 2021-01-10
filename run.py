@@ -18,5 +18,8 @@ def main():
 if __name__ == '__main__':
     schedule.every().hour.do(main)
     while True:
-        schedule.run_pending()
-        time.sleep(1)
+        try:
+            schedule.run_pending()
+            time.sleep(1)
+        except Exception as e:
+            print(str(e))
