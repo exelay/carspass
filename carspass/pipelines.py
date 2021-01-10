@@ -12,7 +12,7 @@ class MongodbPipeline:
             "mongodb+srv://imdb:rowdy0987@carspass.mskrx.mongodb.net/<dbname>?retryWrites=true&w=majority"
         )
         self.db = self.client["Carspass"]
-        self.collection = self.db[spider.scraping_time]
+        self.collection = self.db[spider.name]
 
     def close_spider(self, spider):
         self.client.close()
