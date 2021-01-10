@@ -1,6 +1,5 @@
 import json
 import logging
-from datetime import datetime
 from requests import PreparedRequest
 
 import scrapy
@@ -11,17 +10,12 @@ class AvitoSpider(scrapy.Spider):
     allowed_domains = ['avito.ru']
 
     url = str()
-    page_number = 1
     proxy_url = "https://app.scrapingbee.com/api/v1/"
-
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.scraping_time = datetime.today().date().isoformat()
 
     def start_requests(self):
         req = PreparedRequest()
 
-        self.url = 'https://www.avito.ru/sankt-peterburg/avtomobili/s_probegom-ASgBAgICAUSGFMjmAQ?cd=1&s=104'
+        self.url = 'https://www.avito.ru/sankt-peterburg/avtomobili/s_probegom-ASgBAgICAUSGFMjmAQ?s=104'
         proxy_params = {
             "api_key": "EHW1NW8Y19PCOMPHBDARWQ2A1BOS6GIDEP9ZBWAWUXX6BUE0PIIL94PUW813WY6LISV941770L7R2U4B",
             "url": self.url,
@@ -112,16 +106,3 @@ class AvitoSpider(scrapy.Spider):
                 'actual': True,
                 'source': 'avito',
             }
-        req = PreparedRequest()
-        self.page_number += 1
-        req.prepare_url(self.url, {'p': self.page_number})
-        next_page = req.url
-        proxy_params = {
-            "api_key": "EHW1NW8Y19PCOMPHBDARWQ2A1BOS6GIDEP9ZBWAWUXX6BUE0PIIL94PUW813WY6LISV941770L7R2U4B",
-            "url": next_page,
-            "render_js": "false",
-        }
-        req.prepare_url(self.proxy_url, proxy_params)
-        url = req.url
-        if self.page_number <= 50:
-            yield scrapy.Request(url=url, callback=self.parse_item, dont_filter=True)
