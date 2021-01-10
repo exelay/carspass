@@ -6,7 +6,7 @@ from scrapy.crawler import CrawlerProcess
 from scrapy.utils.project import get_project_settings
 
 
-def main():
+def job():
     process = CrawlerProcess(get_project_settings())
     process.crawl('amru')
     process.crawl('autoru')
@@ -15,7 +15,7 @@ def main():
 
 
 if __name__ == '__main__':
-    schedule.every().hour.do(main)
+    schedule.every(25).minutes.do(job)
     while True:
         try:
             schedule.run_pending()
