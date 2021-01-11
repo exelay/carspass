@@ -117,5 +117,6 @@ class DromSpider(scrapy.Spider):
                 'metro': '',
                 'link': self.get_link(ad),
                 'actual': True if self.get_title(ad) else False,
-                'source': 'drom',
+                'source': self.name,
+                'scraped_at': datetime.now().isoformat(),
             }

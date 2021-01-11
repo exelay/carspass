@@ -19,6 +19,10 @@ class MongodbPipeline:
 
     def process_item(self, item, spider):
         collection_name = 'carspass'
-        if not self.collection.count_documents({'id': item['id']}):
-            self.db[collection_name].insert_one(item)
+
+        self.db[collection_name].update_one(
+            filter={'id': item['id'], 'source': item['source']},
+            update={'$set': item},
+            upsert=True
+        )
         return item
