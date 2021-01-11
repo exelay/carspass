@@ -2,22 +2,20 @@ import logging
 import schedule
 import time
 
-from scrapy.crawler import CrawlerProcess
-from scrapy.utils.project import get_project_settings
+from scrapyd_api import ScrapydAPI
+
+scrapyd = ScrapydAPI()
+PROJECT_NAME = 'carspass'
 
 
-def job():
-    process = CrawlerProcess(get_project_settings())
-    process.crawl('amru')
-    process.crawl('autoru')
-    process.crawl('drom')
-    process.crawl('avito')
-
-    process.start()
+def run():
+    spiders = scrapyd.list_spiders(PROJECT_NAME)
+    for spider in spiders:
+        scrapyd.schedule(PROJECT_NAME, spider)
 
 
 if __name__ == '__main__':
-    schedule.every(25).minutes.do(job)
+    schedule.every(5).minutes.do(run)
     while True:
         try:
             schedule.run_pending()
