@@ -11,27 +11,25 @@ city:
   ikt: irkutsk
 
 transmission:
-  mt: 2
-  at: 1
+  Механика: mt
+  Автомат: at
+  Вариатор: at
+  Робот: at
 
 steering_w:
   left: 1
   right: 2
 
-car_body:
-  sedan: 13
-  cabrio: 5
-  coupe: 6
-  van: None
-  pickup: 11
-  limo: 8
-  minivan: 10
-  wagon: 15
-  suv3: 4
-  suv5: 4
-  liftback: None
-  hatch3: 21
-  hatch5: 21
+frame_type:
+  13: sedan
+  5: cabrio
+  6: coupe
+  11: pickup
+  8: limo
+  10: minivan
+  15: wagon
+  4: suv
+  21: hatch
 
 vendor:
   domestic: 1
