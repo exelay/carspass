@@ -127,7 +127,7 @@ class DromSpider(scrapy.Spider):
     def get_transmission(ad):
         try:
             transmission = ad['description']['transmission']
-            with open('conventions.yaml') as f:
+            with open('conventions/drom.yaml') as f:
                 transmissions = yaml.load(f, Loader=yaml.FullLoader)['transmission']
             return transmissions[transmission]
         except Exception as e:
@@ -136,8 +136,8 @@ class DromSpider(scrapy.Spider):
     @staticmethod
     def get_frame_type(ad):
         try:
-            frame_type = ad['description']['transmission']
-            with open('conventions.yaml') as f:
+            frame_type = ad['frameType']
+            with open('conventions/drom.yaml') as f:
                 frame_types = yaml.load(f, Loader=yaml.FullLoader)['frame_type']
             return frame_types[frame_type]
         except Exception as e:
