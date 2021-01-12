@@ -1,4 +1,5 @@
 import yaml
+import json
 import logging
 from datetime import datetime
 from dateutil.parser import parse
@@ -17,74 +18,70 @@ class DromSpider(scrapy.Spider):
     @staticmethod
     def get_id(ad):
         try:
-            link = ad.xpath('./@href').get()
-            return link.split('/')[-1][:-5]
+            return ad['bullId']
         except Exception as e:
             logging.debug(f"Failed to get id. {e}")
 
     @staticmethod
     def get_img_link(ad):
         try:
-            return ad.xpath('.//img/@data-src').get()
+            return ad['images'][0]['src']
         except Exception as e:
             logging.debug(f"Failed to get image link. {e}")
 
     @staticmethod
     def get_publish_date(ad):
         try:
-            with open('conventions.yaml') as f:
-                month_nums = yaml.load(f, Loader=yaml.FullLoader)['month_nums']
-            date = ad.xpath('.//div[@data-ftid="bull_date"]/text()').get()
-            day = date.split()[0]
-            try:
-                month = date.split()[1]
-            except IndexError:
-                month = 'empty'
-            month_num = month_nums.get(month[:3])
-            if not month_num:
-                if day.startswith('час'):
-                    hours = int(day)
-                    unix_time = datetime.timestamp(datetime.today())
-                    unix_time -= hours * 3600
-                elif day.startswith('мин'):
-                    minute = int(day)
-                    unix_time = datetime.timestamp(datetime.today())
-                    unix_time -= minute * 60
-                else:
-                    unix_time = datetime.timestamp(datetime.today())
-                return datetime.fromtimestamp(unix_time).isoformat()
-            return parse(f"{day}.{month_num}").isoformat()
+            date = ad['date'].split()
+
+            if len(date) < 3:
+                unix_time = datetime.timestamp(datetime.now())
+
+            elif date[1].startswith('мин'):
+                minute = int(date[0])
+                unix_time = datetime.timestamp(datetime.now())
+                unix_time -= minute * 60
+
+            elif date[1].startswith('час'):
+                hours = int(date[0])
+                unix_time = datetime.timestamp(datetime.now())
+                unix_time -= hours * 3600
+
+            else:
+                unix_time = datetime.timestamp(datetime.today())
+                unix_time -= 24 * 3600
+
+            return datetime.fromtimestamp(unix_time).isoformat()
         except Exception as e:
             logging.debug(f'Could not find publish date. Unexpected error: {e}')
 
     @staticmethod
     def get_title(ad):
         try:
-            return ad.xpath('.//span[@data-ftid="bull_title"]/text()').get()
+            return ad['title']
         except Exception as e:
             logging.debug(f"Failed to get title. {e}")
 
     @staticmethod
     def get_price(ad):
         try:
-            price = ad.xpath('.//span[@data-ftid="bull_price"]/text()').get().replace(' ', '')
-            return int(price)
+            return ad['price']
         except Exception as e:
             logging.debug(f"Failed to get price. {e}")
 
     @staticmethod
     def get_mileage(ad):
         try:
-            return ad.xpath('.//span[@data-ftid="bull_description-item"][5]/text()').get()
+            return ad['description']['mileage']
         except Exception as e:
             logging.debug(f"Failed to get mileage. {e}")
 
     @staticmethod
     def get_tech_info(ad):
         try:
-            capacity = ad.xpath('.//span[@data-ftid="bull_description-item"][1]/text()').get().split()[0]
-            power = ad.xpath('.//span[@data-ftid="bull_description-item"][1]/text()').get().split()[2].strip('(')
-            transmission = ad.xpath('.//span[@data-ftid="bull_description-item"][3]/text()').get()
+            capacity = ad['description']['volume'] / 1000
+            power = ad['description']['power']
+            transmission = ad['description']['transmission']
             return f"{capacity} / {transmission} / {power}"
         except Exception as e:
             logging.debug(f"Failed to get technical information. {e}")
@@ -92,19 +89,28 @@ class DromSpider(scrapy.Spider):
     @staticmethod
     def get_location(ad):
         try:
-            return ad.xpath('.//span[@data-ftid="bull_location"]/text()').get()
+            return ad['location']
         except Exception as e:
             logging.debug(f"Failed to get location. {e}")
 
     @staticmethod
     def get_link(ad):
         try:
-            return ad.xpath('./@href').get()
+            return ad['url']
         except Exception as e:
             logging.debug(f"Failed to get link. {e}")
 
+    @staticmethod
+    def get_actual(ad):
+        try:
+            return not ad['sold']
+        except Exception as e:
+            logging.debug(f"Failed to get actual. {e}")
+
     def parse_item(self, response):
-        for ad in response.xpath('//a[@data-ftid="bulls-list_bull"]'):
+        site_data = response.xpath('//script[@data-drom-module="bulls-list"]/@data-drom-module-data').get()
+        ads = json.loads(site_data)['bullList']['bullsData'][0]['bulls']
+        for ad in ads:
             yield {
                 'id': self.get_id(ad),
                 'img_link': self.get_img_link(ad),
@@ -116,7 +122,7 @@ class DromSpider(scrapy.Spider):
                 'location': self.get_location(ad),
                 'metro': '',
                 'link': self.get_link(ad),
-                'actual': True if self.get_title(ad) else False,
+                'actual': self.get_actual(ad),
                 'source': self.name,
                 'scraped_at': datetime.now().isoformat(),
             }
