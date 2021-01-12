@@ -1,0 +1,36 @@
+city:
+  Санкт-Петербург: spb
+  Москва: msk
+  Новосибирск: nvs
+  Казань: kzn
+  Владивосток: vvo
+  Екатеринбург: ekb
+  Калининград: kgd
+  Псков: pkv
+  Приозерск: pzk
+  Иркутск: ikt
+
+transmission:
+  механика: mt
+  автомат: at
+
+steering_w:
+  right: 1
+  left: 2
+
+frame_type:
+    10: sedan
+    11: cabrio
+    12: pickup
+    6: minivan
+    1: coupe
+    3: wagon
+    8: suv3
+    7: suv5
+    9: liftback
+    4: hatch3
+    5: hatch5
+
+vendor:
+  domestic: 0
+  foreign: 1

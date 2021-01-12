@@ -1,0 +1,38 @@
+city:
+  spb: sankt-peterburg
+  msk: moskva
+  nvs: novosibirsk
+  kzn: kazan
+  vvo: vladivostok
+  ekb: ekaterinburg
+  kgd: kaliningrad
+  pkv: pskov
+  pzk: priozersk
+  ikt: irkutsk
+
+transmission:
+  mt: 2
+  at: 1
+
+steering_w:
+  left: 1
+  right: 2
+
+car_body:
+  sedan: 13
+  cabrio: 5
+  coupe: 6
+  van: None
+  pickup: 11
+  limo: 8
+  minivan: 10
+  wagon: 15
+  suv3: 4
+  suv5: 4
+  liftback: None
+  hatch3: 21
+  hatch5: 21
+
+vendor:
+  domestic: 1
+  foreign: 2

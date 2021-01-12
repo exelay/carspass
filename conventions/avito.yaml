@@ -1,0 +1,38 @@
+city:
+  spb: sankt-peterburg
+  msk: moskva
+  nvs: novosibirsk
+  kzn: kazan
+  vvo: vladivostok
+  ekb: ekaterinburg
+  kgd: kaliningrad
+  pkv: pskov
+  pzk: priozersk
+  ikt: irkutsk
+
+vendor:
+  domestic: otechestvennie
+  foreign: inomarki
+
+steering_w:
+  right: RIGHT
+  left: LEFT
+
+transmission:
+    mt: MECHANICAL
+    at: AUTO
+
+car_body:
+    sedan: SEDAN
+    cabrio: CABRIO
+    van: VAN
+    pickup: PICKUP
+    limo: LIMOUSINE
+    minivan: MINIVAN
+    coupe: COUPE
+    wagon: WAGON
+    suv3: ALLROAD_3_DOORS
+    suv5: ALLROAD_5_DOORS
+    liftback: LIFTBACK
+    hatch3: HATCHBACK_3_DOORS
+    hatch5: HATCHBACK_5_DOORS

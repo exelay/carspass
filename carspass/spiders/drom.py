@@ -1,8 +1,7 @@
-import yaml
 import json
+import yaml
 import logging
 from datetime import datetime
-from dateutil.parser import parse
 
 import scrapy
 
@@ -101,6 +100,64 @@ class DromSpider(scrapy.Spider):
             logging.debug(f"Failed to get link. {e}")
 
     @staticmethod
+    def get_brand(ad):
+        try:
+            title = ad['title'].lower().split(',')
+            return title[0].split()[0]
+        except Exception as e:
+            logging.debug(f"Failed to get brand. {e}")
+
+    @staticmethod
+    def get_model(ad):
+        try:
+            title = ad['title'].lower().split(',')
+            return title[0].split()[1]
+        except Exception as e:
+            logging.debug(f"Failed to get model. {e}")
+
+    @staticmethod
+    def get_year(ad):
+        try:
+            title = ad['title'].lower().split(',')
+            return int(title[-1])
+        except Exception as e:
+            logging.debug(f"Failed to get year. {e}")
+
+    @staticmethod
+    def get_transmission(ad):
+        try:
+            transmission = ad['description']['transmission']
+            with open('conventions.yaml') as f:
+                transmissions = yaml.load(f, Loader=yaml.FullLoader)['transmission']
+            return transmissions[transmission]
+        except Exception as e:
+            logging.debug(f"Failed to get transmission. {e}")
+
+    @staticmethod
+    def get_frame_type(ad):
+        try:
+            frame_type = ad['description']['transmission']
+            with open('conventions.yaml') as f:
+                frame_types = yaml.load(f, Loader=yaml.FullLoader)['frame_type']
+            return frame_types[frame_type]
+        except Exception as e:
+            logging.debug(f"Failed to get frame type. {e}")
+
+    @staticmethod
+    def get_power(ad):
+        try:
+            return ad['description']['power']
+        except Exception as e:
+            logging.debug(f"Failed to get power. {e}")
+
+    @staticmethod
+    def get_volume(ad):
+        try:
+            return ad['description']['volume'] / 1000
+        except Exception as e:
+            logging.debug(f"Failed to get volume. {e}")
+
+    @staticmethod
     def get_actual(ad):
         try:
             return not ad['sold']
@@ -120,7 +177,14 @@ class DromSpider(scrapy.Spider):
                 'mileage': self.get_mileage(ad),
                 'tech_info': self.get_tech_info(ad),
                 'location': self.get_location(ad),
-                'metro': '',
+                'brand': self.get_brand(ad),
+                'model': self.get_model(ad),
+                'year': self.get_year(ad),
+                'transmission': self.get_transmission(ad),
+                'frame_type': self.get_frame_type(ad),
+                'power': self.get_power(ad),
+                'volume': self.get_volume(ad),
+                'metro': None,
                 'link': self.get_link(ad),
                 'actual': self.get_actual(ad),
                 'source': self.name,
