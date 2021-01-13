@@ -22,17 +22,15 @@ transmission:
     mt: MECHANICAL
     at: AUTO
 
-car_body:
-    sedan: SEDAN
-    cabrio: CABRIO
-    van: VAN
-    pickup: PICKUP
-    limo: LIMOUSINE
-    minivan: MINIVAN
-    coupe: COUPE
-    wagon: WAGON
-    suv3: ALLROAD_3_DOORS
-    suv5: ALLROAD_5_DOORS
-    liftback: LIFTBACK
-    hatch3: HATCHBACK_3_DOORS
-    hatch5: HATCHBACK_5_DOORS
+frame_type:
+    седан: sedan
+    кабриолет: cabrio
+    фургон: van
+    пикап: pickup
+    лимузин: limo
+    минивэн: minivan
+    купе: coupe
+    универсал: wagon
+    внедорожник: suv
+    лифтбек: liftback
+    хетчбэк: hatch
