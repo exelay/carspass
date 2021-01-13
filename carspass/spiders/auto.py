@@ -151,7 +151,7 @@ class AutoSpider(scrapy.Spider):
     def get_power(ad):
         try:
             power = ad.xpath('.//meta[@itemprop="enginePower"]/@content').get()
-            return power.split()[0]
+            return int(power.split()[0])
         except Exception as e:
             logging.debug(f"Failed to get power. {e}")
 
@@ -159,7 +159,7 @@ class AutoSpider(scrapy.Spider):
     def get_volume(ad):
         try:
             configuration = ad.xpath('.//meta[@itemprop="vehicleConfiguration"]/@content').get().split()
-            return configuration[2]
+            return float(configuration[2])
         except Exception as e:
             logging.debug(f"Failed to get volume. {e}")
 
