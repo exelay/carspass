@@ -126,13 +126,12 @@ class AvitoSpider(scrapy.Spider):
         except Exception as e:
             logging.debug(f"Failed to get year. {e}")
 
-    def get_transmission(self, ad):
+    @staticmethod
+    def get_transmission(ad):
         try:
             car_data = ad['iva']['AutoParamsStep'][0]['payload']['text']
             transmission = car_data.split()[4].lower()
-            with open(f'conventions/{self.name}.yaml') as f:
-                transmissions = yaml.load(f, Loader=yaml.FullLoader)['transmission']
-            return transmissions[transmission]
+            return transmission
         except Exception as e:
             logging.debug(f"Failed to get transmission. {e}")
 
