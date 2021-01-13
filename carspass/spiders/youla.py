@@ -95,7 +95,7 @@ class YoulaSpider(scrapy.Spider):
     @staticmethod
     def get_model(ad):
         try:
-            return ad['modelAlias']
+            return ad['modelAlias'].replace('_', '-')
         except Exception as e:
             logging.debug(f"Failed to get model. {e}")
 
