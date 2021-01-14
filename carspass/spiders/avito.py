@@ -14,7 +14,7 @@ class AvitoSpider(scrapy.Spider):
     url = str()
     proxy_url = "https://app.scrapingbee.com/api/v1/"
 
-    def start_requests(self):
+    def start_requests(self) -> scrapy.Request:
         req = PreparedRequest()
 
         self.url = 'https://www.avito.ru/sankt-peterburg/avtomobili/s_probegom-ASgBAgICAUSGFMjmAQ?s=104'
@@ -29,21 +29,21 @@ class AvitoSpider(scrapy.Spider):
         yield scrapy.Request(url=url, callback=self.parse_item)
 
     @staticmethod
-    def get_id(ad):
+    def get_id(ad) -> str:
         try:
             return ad.get('id')
         except Exception as e:
             logging.debug(f"Failed to get id. {e}")
 
     @staticmethod
-    def get_img_link(ad):
+    def get_img_link(ad) -> str:
         try:
             return ad['gallery']['imageLargeVipUrl']
         except Exception as e:
             logging.debug(f"Failed to get image link. {e}")
 
     @staticmethod
-    def get_publish_date(ad):
+    def get_publish_date(ad) -> str:
         try:
             unix_time = int(ad['sortTimeStamp']) // 1000
             return datetime.fromtimestamp(unix_time).isoformat()
@@ -51,21 +51,21 @@ class AvitoSpider(scrapy.Spider):
             logging.debug(f"Failed to get publish date. {e}")
 
     @staticmethod
-    def get_title(ad):
+    def get_title(ad) -> str:
         try:
             return ad['title']
         except Exception as e:
             logging.debug(f"Failed to get title. {e}")
 
     @staticmethod
-    def get_price(ad):
+    def get_price(ad) -> int:
         try:
             return ad['priceDetailed']['value']
         except Exception as e:
             logging.debug(f"Failed to get price. {e}")
 
     @staticmethod
-    def get_mileage(ad):
+    def get_mileage(ad) -> int:
         try:
             payload = ad['iva']['AutoParamsStep'][0]['payload']['text']
             mileage = payload.split(',')[0][:-2].replace(' ', '')
@@ -74,7 +74,7 @@ class AvitoSpider(scrapy.Spider):
             logging.debug(f"Failed to get mileage. {e}")
 
     @staticmethod
-    def get_tech_info(ad):
+    def get_tech_info(ad) -> str:
         try:
             payload = ad['iva']['AutoParamsStep'][0]['payload']['text']
             tech_info = payload.split(',')[1].split()
@@ -86,21 +86,21 @@ class AvitoSpider(scrapy.Spider):
             logging.debug(f"Failed to get technical information. {e}")
 
     @staticmethod
-    def get_location(ad):
+    def get_location(ad) -> str:
         try:
             return ad['location']['name']
         except Exception as e:
             logging.debug(f"Failed to get location. {e}")
 
     @staticmethod
-    def get_link(ad):
+    def get_link(ad) -> str:
         try:
             return f"https://www.avito.ru/{ad['urlPath']}"
         except Exception as e:
             logging.debug(f"Failed to get link. {e}")
 
     @staticmethod
-    def get_brand(ad):
+    def get_brand(ad) -> str:
         try:
             url = ad["urlPath"]
             car_metadata = url.split('/')[-1].split('_')
@@ -109,7 +109,7 @@ class AvitoSpider(scrapy.Spider):
             logging.debug(f"Failed to get brand. {e}")
 
     @staticmethod
-    def get_model(ad):
+    def get_model(ad) -> str:
         try:
             url = ad["urlPath"]
             car_metadata = url.split('/')[-1].split('_')
@@ -118,7 +118,7 @@ class AvitoSpider(scrapy.Spider):
             logging.debug(f"Failed to get model. {e}")
 
     @staticmethod
-    def get_year(ad):
+    def get_year(ad) -> int:
         try:
             url = ad["urlPath"]
             car_metadata = url.split('/')[-1].split('_')
@@ -127,7 +127,7 @@ class AvitoSpider(scrapy.Spider):
             logging.debug(f"Failed to get year. {e}")
 
     @staticmethod
-    def get_transmission(ad):
+    def get_transmission(ad) -> str:
         try:
             car_data = ad['iva']['AutoParamsStep'][0]['payload']['text']
             transmission = car_data.split()[4].lower()
@@ -135,7 +135,7 @@ class AvitoSpider(scrapy.Spider):
         except Exception as e:
             logging.debug(f"Failed to get transmission. {e}")
 
-    def get_frame_type(self, ad):
+    def get_frame_type(self, ad) -> str:
         try:
             car_data = ad['iva']['AutoParamsStep'][0]['payload']['text']
             frame_type = car_data.split()[7].strip(',')
@@ -146,7 +146,7 @@ class AvitoSpider(scrapy.Spider):
             logging.debug(f"Failed to get frame type. {e}")
 
     @staticmethod
-    def get_power(ad):
+    def get_power(ad) -> int:
         try:
             car_data = ad['iva']['AutoParamsStep'][0]['payload']['text']
             power = car_data.split()[5].strip('(')
@@ -155,7 +155,7 @@ class AvitoSpider(scrapy.Spider):
             logging.debug(f"Failed to get power. {e}")
 
     @staticmethod
-    def get_volume(ad):
+    def get_volume(ad) -> float:
         try:
             car_data = ad['iva']['AutoParamsStep'][0]['payload']['text']
             volume = car_data.split()[3]
@@ -163,7 +163,7 @@ class AvitoSpider(scrapy.Spider):
         except Exception as e:
             logging.debug(f"Failed to get volume. {e}")
 
-    def parse_item(self, response):
+    def parse_item(self, response) -> dict:
         p_loader = json.loads(response.xpath('//div[@class="js-initial"]/@data-state').get())
         ads = [item for item in p_loader['catalog']['items'] if item['type'] == 'item']
         for ad in ads:
