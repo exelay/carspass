@@ -13,26 +13,26 @@ class YoulaSpider(scrapy.Spider):
     name = 'amru'
     allowed_domains = ['youla.ru', 'am.ru']
 
-    def start_requests(self):
+    def start_requests(self) -> scrapy.Request:
         url = 'https://auto.youla.ru/sankt-peterburg/cars/used/?searchOrder=104&publication=1'
         yield scrapy.Request(url=url, callback=self.parse_item)
 
     @staticmethod
-    def get_id(ad):
+    def get_id(ad) -> str:
         try:
             return ad['id']
         except Exception as e:
             logging.debug(f"Failed to get id. {e}")
 
     @staticmethod
-    def get_img_link(ad):
+    def get_img_link(ad) -> str:
         try:
             return ad['photos'][1][1][1][3]
         except Exception as e:
             logging.debug(f"Failed to get image link. {e}")
 
     @staticmethod
-    def get_publish_date(ad):
+    def get_publish_date(ad) -> str:
         try:
             unix_time = int(ad["actualizationDate"][2:]) // 1000
             return datetime.fromtimestamp(unix_time).isoformat()
@@ -40,21 +40,21 @@ class YoulaSpider(scrapy.Spider):
             logging.debug(f"Failed to get publish date. {e}")
 
     @staticmethod
-    def get_title(ad):
+    def get_title(ad) -> str:
         try:
             return ad["fullTitle"]
         except Exception as e:
             logging.debug(f"Failed to get title. {e}")
 
     @staticmethod
-    def get_price(ad):
+    def get_price(ad) -> int:
         try:
             return ad["prices"][1][5]
         except Exception as e:
             logging.debug(f"Failed to get price. {e}")
 
     @staticmethod
-    def get_mileage(ad):
+    def get_mileage(ad) -> int:
         try:
             mileage = ad['info'][1][0][1][5][:-2].replace(' ', '')
             return int(mileage)
@@ -62,7 +62,7 @@ class YoulaSpider(scrapy.Spider):
             logging.debug(f"Failed to get mileage. {e}")
 
     @staticmethod
-    def get_tech_info(ad):
+    def get_tech_info(ad) -> str:
         try:
             capacity = ad['engineVol']
             transmission = ad['info'][1][5][1][3]
@@ -72,41 +72,41 @@ class YoulaSpider(scrapy.Spider):
             logging.debug(f"Failed to get technical information. {e}")
 
     @staticmethod
-    def get_location(ad):
+    def get_location(ad) -> str:
         try:
             return ad['city']
         except Exception as e:
             logging.debug(f"Failed to get location. {e}")
 
     @staticmethod
-    def get_link(ad):
+    def get_link(ad) -> str:
         try:
             return ad['link']
         except Exception as e:
             logging.debug(f"Failed to get link. {e}")
 
     @staticmethod
-    def get_brand(ad):
+    def get_brand(ad) -> str:
         try:
             return ad['brandAlias']
         except Exception as e:
             logging.debug(f"Failed to get brand. {e}")
 
     @staticmethod
-    def get_model(ad):
+    def get_model(ad) -> str:
         try:
             return ad['modelAlias'].replace('_', '-')
         except Exception as e:
             logging.debug(f"Failed to get model. {e}")
 
     @staticmethod
-    def get_year(ad):
+    def get_year(ad) -> int:
         try:
             return int(ad['year'])
         except Exception as e:
             logging.debug(f"Failed to get year. {e}")
 
-    def get_transmission(self, ad):
+    def get_transmission(self, ad) -> str:
         try:
             transmission = ad['info'][1][5][1][3]
             with open(f'conventions/{self.name}.yaml') as f:
@@ -115,7 +115,7 @@ class YoulaSpider(scrapy.Spider):
         except Exception as e:
             logging.debug(f"Failed to get transmission. {e}")
 
-    def get_frame_type(self, ad):
+    def get_frame_type(self, ad) -> str:
         try:
             frame_type = int(ad["searchQuery"][1][1])
             with open(f'conventions/{self.name}.yaml') as f:
@@ -125,7 +125,7 @@ class YoulaSpider(scrapy.Spider):
             logging.debug(f"Failed to get frame type. {e}")
 
     @staticmethod
-    def get_power(ad):
+    def get_power(ad) -> int:
         try:
             power = ad['info'][1][2][1][3][:-5]
             return int(power)
@@ -133,13 +133,13 @@ class YoulaSpider(scrapy.Spider):
             logging.debug(f"Failed to get power. {e}")
 
     @staticmethod
-    def get_volume(ad):
+    def get_volume(ad) -> float:
         try:
             return float(ad['engineVol'])
         except Exception as e:
             logging.debug(f"Failed to get volume. {e}")
 
-    def parse_item(self, response):
+    def parse_item(self, response) -> dict:
         site_data = unquote(
             re.findall(r"window\.transitState = decodeURIComponent\(\"([\s\S]+?)\"\);</script>", response.text)[0]
         )
