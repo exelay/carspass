@@ -6,6 +6,8 @@ from requests import PreparedRequest
 
 import scrapy
 
+from config import PROXY_TOKEN
+
 
 class AvitoSpider(scrapy.Spider):
     name = 'avito'
@@ -19,7 +21,7 @@ class AvitoSpider(scrapy.Spider):
 
         self.url = 'https://www.avito.ru/sankt-peterburg/avtomobili/s_probegom-ASgBAgICAUSGFMjmAQ?s=104'
         proxy_params = {
-            "api_key": "EHW1NW8Y19PCOMPHBDARWQ2A1BOS6GIDEP9ZBWAWUXX6BUE0PIIL94PUW813WY6LISV941770L7R2U4B",
+            "api_key": PROXY_TOKEN,
             "url": self.url,
             "render_js": "false",
         }
