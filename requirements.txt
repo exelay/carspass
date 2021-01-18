@@ -38,6 +38,7 @@ scrapyd-client==1.1.0
 scrapyrt==0.11.0
 service-identity==18.1.0
 six==1.15.0
+transliterate==1.10.2
 Twisted==20.3.0
 urllib3==1.25.11
 w3lib==1.22.0
