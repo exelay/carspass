@@ -19,7 +19,7 @@ class AvitoSpider(scrapy.Spider):
     def start_requests(self) -> scrapy.Request:
         req = PreparedRequest()
 
-        self.url = 'https://www.avito.ru/sankt-peterburg/avtomobili/s_probegom-ASgBAgICAUSGFMjmAQ?s=104'
+        self.url = 'https://www.avito.ru/sankt-peterburg/avtomobili/s_probegom-ASgBAgICAUSGFMjmAQ?s=104&radius=200'
         proxy_params = {
             "api_key": PROXY_TOKEN,
             "url": self.url,

@@ -15,7 +15,7 @@ def run():
 
 
 if __name__ == '__main__':
-    schedule.every(5).minutes.do(run)
+    schedule.every(1).minutes.do(run)
     while True:
         try:
             schedule.run_pending()

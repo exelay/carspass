@@ -11,7 +11,7 @@ class DromSpider(scrapy.Spider):
     allowed_domains = ['drom.ru']
 
     def start_requests(self):
-        url = 'https://spb.drom.ru/auto/used/all/'
+        url = 'https://spb.drom.ru/auto/used/all?distance=200'
         yield scrapy.Request(url=url, callback=self.parse_item)
 
     @staticmethod
