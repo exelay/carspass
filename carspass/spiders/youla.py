@@ -99,6 +99,15 @@ class YoulaSpider(scrapy.Spider):
         except Exception as e:
             logging.debug(f"Failed to get model. {e}")
 
+    def get_vendor(self, ad) -> str:
+        brand = self.get_brand(ad)
+        with open("conventions/vendors.json", "r") as file:
+            vendors = json.loads(file.read())
+        if brand in vendors['domestic']:
+            return 'domestic'
+        else:
+            return 'foreign'
+
     @staticmethod
     def get_year(ad) -> int:
         try:
@@ -158,6 +167,7 @@ class YoulaSpider(scrapy.Spider):
                 'location': self.get_location(ad),
                 'brand': self.get_brand(ad),
                 'model': self.get_model(ad),
+                'vendor': self.get_vendor(ad),
                 'year': self.get_year(ad),
                 'transmission': self.get_transmission(ad),
                 'frame_type': self.get_frame_type(ad),
