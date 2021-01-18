@@ -7,6 +7,7 @@ from urllib.parse import unquote
 
 import scrapy
 import yaml
+from transliterate import translit
 
 
 class YoulaSpider(scrapy.Spider):
@@ -88,14 +89,16 @@ class YoulaSpider(scrapy.Spider):
     @staticmethod
     def get_brand(ad) -> str:
         try:
-            return ad['brandAlias']
+            brand = ad['brandAlias']
+            return translit(brand, 'ru', reversed=True)
         except Exception as e:
             logging.debug(f"Failed to get brand. {e}")
 
     @staticmethod
     def get_model(ad) -> str:
         try:
-            return ad['modelAlias'].replace('_', '-')
+            model = ad['modelAlias'].replace('_', '-')
+            return translit(model, 'ru', reversed=True)
         except Exception as e:
             logging.debug(f"Failed to get model. {e}")
 

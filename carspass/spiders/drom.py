@@ -2,6 +2,7 @@ import json
 import yaml
 import logging
 from datetime import datetime
+from transliterate import translit
 
 import scrapy
 
@@ -100,18 +101,20 @@ class DromSpider(scrapy.Spider):
             logging.debug(f"Failed to get link. {e}")
 
     @staticmethod
-    def get_brand(ad):
+    def get_brand(ad) -> str:
         try:
             title = ad['title'].lower().split(',')
-            return title[0].split()[0]
+            brand = title[0].split()[0]
+            return translit(brand, 'ru', reversed=True)
         except Exception as e:
             logging.debug(f"Failed to get brand. {e}")
 
     @staticmethod
-    def get_model(ad):
+    def get_model(ad) -> str:
         try:
             title = ad['title'].lower().split(',')
-            return title[0].split()[1]
+            model = title[0].split()[1]
+            return translit(model, 'ru', reversed=True)
         except Exception as e:
             logging.debug(f"Failed to get model. {e}")
 
