@@ -37,25 +37,7 @@ ROBOTSTXT_OBEY = False
 # Disable Telnet Console (enabled by default)
 #TELNETCONSOLE_ENABLED = False
 
-COOKIES_DEBUG = True
-
-# Override the default request headers:
-# DEFAULT_REQUEST_HEADERS = {
-#     "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/"
-#               "apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
-#     "cookie": "yandexuid=5324645381598645529; yuidss=5324645381598645529; "
-#               "ymex=1914005529.yrts.1598645529#1914005529.yrtsi.1598645529; _ym_uid=1598869015161464602; "
-#               "my=YwA=; gdpr=0; yandex_login=alexeykirpa; yabs-sid=1955603231602190189; "
-#               "i=MegyYOZZz6WdDgHuRhybzKC8ej3WehyQR/+LNFrUkVb0wQV9BvpAkr9GpkeM4WA35dZMTIJ/XjOlRJQQVaFjVCNSQZc=; "
-#               "_ym_d=1606568652; yabs-frequency=/5/0W000EgQZLy00000/vdUmS9K00010FY1C1NDmb000040-8Ki5St2K0000G3uX/; "
-#               "is_gdpr=0; is_gdpr_b=CLuMORDGDygC; HOhdORSx=1; "
-#               "ys=udn.cDrQkNC70LXQutGB0LXQuSDQmtC40YDQv9Cw#c_chck.56096774; "
-#               "Session_id=3:1610022364.5.0.1599834695875:Nh25XQ:4.1|555458220.0.2|228431.196368."
-#               "swu8rspoyqSUAJvuXc87Mz6ZuqQ; sessionid2=3:1610022364.5.0.1599834695875:Nh25XQ:4.1|555458220.0.2|"
-#               "228431.147426.s7pyWgXj0FCKZcDABnf8mnW8xGE",
-#     "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 "
-#                   "(KHTML, like Gecko) Chrome/85.0.4183.121 Safari/537.36",
-# }
+COOKIES_DEBUG = False
 
 # Enable or disable spider middlewares
 # See https://docs.scrapy.org/en/latest/topics/spider-middleware.html
@@ -103,3 +85,17 @@ ITEM_PIPELINES = {
 #HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
 
 FEED_EXPORT_ENCODING = 'utf-8'
+
+AUTOTHROTTLE_ENABLED = False
+CONCURRENT_REQUESTS = 32
+CONCURRENT_REQUESTS_PER_DOMAIN = 32
+DOWNLOAD_TIMEOUT = 600
+
+# enable the middleware
+DOWNLOADER_MIDDLEWARES = {'scrapy_crawlera.CrawleraMiddleware': 610}
+
+# enable crawlera
+CRAWLERA_ENABLED = True
+
+# the APIkey you get with your subscription
+CRAWLERA_APIKEY = '9956e00676f243468d212a49e77fe6a4'

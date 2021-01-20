@@ -16,7 +16,7 @@ class YoulaSpider(scrapy.Spider):
 
     def start_requests(self) -> scrapy.Request:
         url = 'https://auto.youla.ru/sankt-peterburg/cars/used/?searchOrder=104&publication=1'
-        yield scrapy.Request(url=url, callback=self.parse_item)
+        yield scrapy.Request(url=url, callback=self.parse_item, meta={'dont_proxy': True})
 
     @staticmethod
     def get_id(ad) -> str:

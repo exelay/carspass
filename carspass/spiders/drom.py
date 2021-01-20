@@ -13,7 +13,7 @@ class DromSpider(scrapy.Spider):
 
     def start_requests(self):
         url = 'https://spb.drom.ru/auto/used/all?distance=200'
-        yield scrapy.Request(url=url, callback=self.parse_item)
+        yield scrapy.Request(url=url, callback=self.parse_item, meta={'dont_proxy': True})
 
     @staticmethod
     def get_id(ad):

@@ -2,7 +2,6 @@ import json
 import yaml
 import logging
 from datetime import datetime
-from requests import PreparedRequest
 
 import scrapy
 
@@ -13,21 +12,8 @@ class AvitoSpider(scrapy.Spider):
     name = 'avito'
     allowed_domains = ['avito.ru']
 
-    url = str()
-    proxy_url = "https://app.scrapingbee.com/api/v1/"
-
     def start_requests(self) -> scrapy.Request:
-        req = PreparedRequest()
-
-        self.url = 'https://www.avito.ru/sankt-peterburg/avtomobili/s_probegom-ASgBAgICAUSGFMjmAQ?s=104&radius=200'
-        proxy_params = {
-            "api_key": PROXY_TOKEN,
-            "url": self.url,
-            "render_js": "false",
-        }
-        req.prepare_url(self.proxy_url, proxy_params)
-        url = req.url
-
+        url = 'https://www.avito.ru/sankt-peterburg/avtomobili/s_probegom-ASgBAgICAUSGFMjmAQ?s=104&radius=200'
         yield scrapy.Request(url=url, callback=self.parse_item)
 
     @staticmethod
