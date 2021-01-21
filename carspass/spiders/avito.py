@@ -13,7 +13,7 @@ class AvitoSpider(scrapy.Spider):
     allowed_domains = ['avito.ru']
 
     def start_requests(self) -> scrapy.Request:
-        url = 'https://www.avito.ru/sankt-peterburg/avtomobili/s_probegom-ASgBAgICAUSGFMjmAQ?s=104&radius=200'
+        url = 'https://www.avito.ru/sankt-peterburg/avtomobili/s_probegom?radius=200&s=104'
         yield scrapy.Request(url=url, callback=self.parse_item)
 
     @staticmethod
