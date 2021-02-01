@@ -2,10 +2,10 @@
 .venv/
 .env
 
-#IDLE
+# IDLE
 .idea/
 
-#Python files
+# Python files
 __pycache__/
 *.pyc
 
@@ -13,3 +13,10 @@ __pycache__/
 debug.log
 .DS_Store
 dataset.json
+del.json
+brands_data.json
+
+# Scrapy staff
+build/
+project.egg-info/
+setup.py

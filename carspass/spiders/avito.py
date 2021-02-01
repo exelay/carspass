@@ -5,8 +5,6 @@ from datetime import datetime
 
 import scrapy
 
-from config import PROXY_TOKEN
-
 
 class AvitoSpider(scrapy.Spider):
     name = 'avito'

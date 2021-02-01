@@ -103,18 +103,16 @@ class DromSpider(scrapy.Spider):
     @staticmethod
     def get_brand(ad) -> str:
         try:
-            title = ad['title'].lower().split(',')
-            brand = title[0].split()[0]
-            return translit(brand, 'ru', reversed=True)
+            link = ad['url']
+            return link.split('/')[3]
         except Exception as e:
             logging.debug(f"Failed to get brand. {e}")
 
     @staticmethod
     def get_model(ad) -> str:
         try:
-            title = ad['title'].lower().split(',')
-            model = title[0].split()[1]
-            return translit(model, 'ru', reversed=True)
+            link = ad['url']
+            return link.split('/')[4]
         except Exception as e:
             logging.debug(f"Failed to get model. {e}")
 
