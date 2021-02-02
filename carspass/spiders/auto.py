@@ -9,6 +9,7 @@ import scrapy
 class AutoSpider(scrapy.Spider):
     name = 'autoru'
     allowed_domains = ['auto.ru']
+    scraped_time = datetime.now().isoformat(timespec='seconds')
 
     def start_requests(self):
         url = 'https://auto.ru/sankt-peterburg/cars/used/?sort=cr_date-desc&top_days=1'
@@ -17,7 +18,7 @@ class AutoSpider(scrapy.Spider):
     @staticmethod
     def get_id(ad):
         try:
-            link = ad.xpath('.//meta[@itemprop="url"]/@content').get()
+            link = ad.xpath('.//a[@class="Link ListingItemTitle-module__link"]/@href').get()
             return link.split('/')[-2].split('-')[0]
         except Exception as e:
             logging.debug(f"Failed to get id. {e}")
@@ -25,7 +26,8 @@ class AutoSpider(scrapy.Spider):
     @staticmethod
     def get_img_link(ad):
         try:
-            return ad.xpath('.//meta[@itemprop="image"]/@content').get()
+            img_link = ad.xpath('//div[@class="LazyImage Brazzers__image"]/@data-src').get()
+            return 'http:' + img_link
         except Exception as e:
             logging.debug(f"Failed to get image link. {e}")
 
@@ -52,22 +54,23 @@ class AutoSpider(scrapy.Spider):
                 unix_time = datetime.timestamp(datetime.today())
                 unix_time -= 24 * 3600
 
-            return datetime.fromtimestamp(unix_time).isoformat()
+            return datetime.fromtimestamp(unix_time).isoformat(timespec='seconds')
         except Exception as e:
             logging.debug(f'Could not find publish date. Unexpected error: {e}')
 
     @staticmethod
     def get_title(ad):
         try:
-            return ad.xpath('.//meta[@itemprop="name"]/@content').get()
+            return ad.xpath('.//a[@class="Link ListingItemTitle-module__link"]/text()').get()
         except Exception as e:
             logging.debug(f"Failed to get title. {e}")
 
     @staticmethod
     def get_price(ad):
         try:
-            price = ad.xpath('.//meta[@itemprop="price"]/@content').get()
-            return int(price)
+            price = ad.xpath('.//div[@class="ListingItemPrice-module__content"]//text()')\
+                .get().encode('ascii', errors='ignore')
+            return int(price.decode('utf-8'))
         except Exception as e:
             logging.debug(f"Failed to get price. {e}")
 
@@ -83,9 +86,11 @@ class AutoSpider(scrapy.Spider):
     @staticmethod
     def get_tech_info(ad):
         try:
-            capacity = ad.xpath('.//meta[@itemprop="engineDisplacement"]/@content').get().split()[0]
-            power = ad.xpath('.//meta[@itemprop="enginePower"]/@content').get().split()[0]
-            transmission = ad.xpath('.//meta[@itemprop="vehicleTransmission"]/@content').get()
+            info = ad.xpath('.//div[@class="ListingItemTechSummaryDesktop__cell"][1]/text()')\
+                .get().split('\u2009/\u2009')
+            capacity = float(info[0].split()[0])
+            power = int(info[1].split()[0])
+            transmission = ad.xpath('.//div[@class="ListingItemTechSummaryDesktop__cell"][2]/text()').get()
             return f"{capacity} / {transmission} / {power}"
         except Exception as e:
             logging.debug(f"Failed to get technical information. {e}")
@@ -100,14 +105,14 @@ class AutoSpider(scrapy.Spider):
     @staticmethod
     def get_link(ad):
         try:
-            return ad.xpath('.//meta[@itemprop="url"]/@content').get()
+            return ad.xpath('.//a[@class="Link ListingItemTitle-module__link"]/@href').get()
         except Exception as e:
             logging.debug(f"Failed to get link. {e}")
 
     @staticmethod
     def get_brand(ad):
         try:
-            link = ad.xpath('.//meta[@itemprop="url"]/@content').get()
+            link = ad.xpath('.//a[@class="Link ListingItemTitle-module__link"]/@href').get()
             return link.split('/')[6]
         except Exception as e:
             logging.debug(f"Failed to get brand. {e}")
@@ -115,7 +120,7 @@ class AutoSpider(scrapy.Spider):
     @staticmethod
     def get_model(ad):
         try:
-            link = ad.xpath('.//meta[@itemprop="url"]/@content').get()
+            link = ad.xpath('.//a[@class="Link ListingItemTitle-module__link"]/@href').get()
             return link.split('/')[7]
         except Exception as e:
             logging.debug(f"Failed to get model. {e}")
@@ -132,15 +137,14 @@ class AutoSpider(scrapy.Spider):
     @staticmethod
     def get_year(ad):
         try:
-            year = ad.xpath('.//meta[@itemprop="productionDate"]/@content').get()
+            year = ad.xpath('.//div[@class="ListingItem-module__year"]/text()').get()
             return int(year)
         except Exception as e:
             logging.debug(f"Failed to get year. {e}")
 
     def get_transmission(self, ad):
         try:
-            configuration = ad.xpath('.//meta[@itemprop="vehicleConfiguration"]/@content').get().split()
-            transmission = configuration[1]
+            transmission = ad.xpath('.//div[@class="ListingItemTechSummaryDesktop__cell"][2]/text()').get()
             with open(f'conventions/{self.name}.yaml') as f:
                 transmissions = yaml.load(f, Loader=yaml.FullLoader)['transmission']
             return transmissions[transmission]
@@ -149,8 +153,7 @@ class AutoSpider(scrapy.Spider):
 
     def get_frame_type(self, ad):
         try:
-            configuration = ad.xpath('.//meta[@itemprop="vehicleConfiguration"]/@content').get().split()
-            frame_type = configuration[0]
+            frame_type = ad.xpath('.//div[@class="ListingItemTechSummaryDesktop__cell"][3]/text()').get()
             with open(f'conventions/{self.name}.yaml') as f:
                 frame_types = yaml.load(f, Loader=yaml.FullLoader)['frame_type']
             return frame_types[frame_type]
@@ -160,16 +163,20 @@ class AutoSpider(scrapy.Spider):
     @staticmethod
     def get_power(ad):
         try:
-            power = ad.xpath('.//meta[@itemprop="enginePower"]/@content').get()
-            return int(power.split()[0])
+            info = ad.xpath('.//div[@class="ListingItemTechSummaryDesktop__cell"][1]/text()') \
+                .get().split('\u2009/\u2009')
+            power = int(info[1].split()[0])
+            return power
         except Exception as e:
             logging.debug(f"Failed to get power. {e}")
 
     @staticmethod
     def get_volume(ad):
         try:
-            configuration = ad.xpath('.//meta[@itemprop="vehicleConfiguration"]/@content').get().split()
-            return float(configuration[2])
+            info = ad.xpath('.//div[@class="ListingItemTechSummaryDesktop__cell"][1]/text()') \
+                .get().split('\u2009/\u2009')
+            capacity = float(info[0].split()[0])
+            return float(capacity)
         except Exception as e:
             logging.debug(f"Failed to get volume. {e}")
 
@@ -197,5 +204,5 @@ class AutoSpider(scrapy.Spider):
                 'link': self.get_link(ad),
                 'actual': True,
                 'source': self.name,
-                'scraped_at': datetime.now().isoformat(),
+                'scraped_at': self.scraped_time,
             }

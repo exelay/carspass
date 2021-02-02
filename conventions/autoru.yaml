@@ -11,29 +11,29 @@ city:
   ikt: irkutsk
 
 transmission:
-    MECHANICAL: mt
-    AUTOMATIC: at
-    ROBOT: at
-    VARIATOR: at
+    механика: mt
+    автомат: at
+    робот: at
+    вариатор: at
 
 steering_w:
   right: RIGHT
   left: LEFT
 
 frame_type:
-    SEDAN: sedan
-    CABRIO: cabrio
-    VAN: van
-    PICKUP: pickup
-    LIMOUSINE: limo
-    MINIVAN: minivan
-    COUPE: coupe
-    WAGON: wagon
-    ALLROAD_3_DOORS: suv3
-    ALLROAD_5_DOORS: suv5
-    LIFTBACK: liftback
-    HATCHBACK_3_DOORS: hatch3
-    HATCHBACK_5_DOORS: hatch5
+    седан: sedan
+    кабриолет: cabrio
+    фургон: van
+    пикап двойная кабина: pickup
+    лимузин: limo
+    минивэн: minivan
+    купе: coupe
+    универсал 5 дв.: wagon
+    внедорожник 3 дв.: suv3
+    внедорожник 5 дв.: suv5
+    лифтбек: liftback
+    хэтчбек 3 дв.: hatch3
+    хэтчбек 5 дв.: hatch5
 
 vendor:
   domestic: vendor-domestic
