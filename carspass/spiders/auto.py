@@ -26,7 +26,7 @@ class AutoSpider(scrapy.Spider):
     @staticmethod
     def get_img_link(ad):
         try:
-            img_link = ad.xpath('//div[@class="LazyImage Brazzers__image"]/@data-src').get()
+            img_link = ad.xpath('.//div[@class="LazyImage Brazzers__image"]/@data-src').get()
             return 'http:' + img_link
         except Exception as e:
             logging.debug(f"Failed to get image link. {e}")
