@@ -91,11 +91,11 @@ CONCURRENT_REQUESTS = 32
 CONCURRENT_REQUESTS_PER_DOMAIN = 32
 DOWNLOAD_TIMEOUT = 600
 
-# enable the middleware
-DOWNLOADER_MIDDLEWARES = {'scrapy_crawlera.CrawleraMiddleware': 610}
-
-# enable crawlera
-CRAWLERA_ENABLED = True
-
-# the APIkey you get with your subscription
-CRAWLERA_APIKEY = 'ed04bdb0437044b6a84097d38916e19f'
+# # enable the middleware
+# DOWNLOADER_MIDDLEWARES = {'scrapy_crawlera.CrawleraMiddleware': 610}
+#
+# # enable crawlera
+# CRAWLERA_ENABLED = True
+#
+# # the APIkey you get with your subscription
+# CRAWLERA_APIKEY = 'ed04bdb0437044b6a84097d38916e19f'

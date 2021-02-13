@@ -32,6 +32,7 @@ PyYAML==5.3.1
 queuelib==1.5.0
 requests==2.25.1
 schedule==0.6.0
+scraperapi-sdk==0.2.2
 Scrapy==2.4.1
 scrapy-crawlera==1.7.2
 scrapyd==1.2.1

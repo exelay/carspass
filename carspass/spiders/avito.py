@@ -4,15 +4,19 @@ import logging
 from datetime import datetime
 
 import scrapy
+from scraper_api import ScraperAPIClient
+
+
+client = ScraperAPIClient('b56251d54e5271bd63f2cf128aef8574')
 
 
 class AvitoSpider(scrapy.Spider):
     name = 'avito'
-    allowed_domains = ['avito.ru']
+    allowed_domains = ['avito.ru', 'api.scraperapi.com']
 
     def start_requests(self) -> scrapy.Request:
         url = 'https://www.avito.ru/sankt-peterburg/avtomobili/s_probegom?radius=200&s=104'
-        yield scrapy.Request(url=url, callback=self.parse_item)
+        yield scrapy.Request(client.scrapyGet(url=url), callback=self.parse_item, meta={'dont_proxy': True})
 
     @staticmethod
     def get_id(ad) -> str:
