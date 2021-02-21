@@ -7,7 +7,7 @@ import scrapy
 from scraper_api import ScraperAPIClient
 
 
-client = ScraperAPIClient('b56251d54e5271bd63f2cf128aef8574')
+client = ScraperAPIClient('593e157d53727b72a8a825660cd50868')
 
 
 class AvitoSpider(scrapy.Spider):
