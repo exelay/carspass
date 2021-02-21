@@ -13,6 +13,7 @@ client = ScraperAPIClient('b56251d54e5271bd63f2cf128aef8574')
 class AvitoSpider(scrapy.Spider):
     name = 'avito'
     allowed_domains = ['avito.ru', 'api.scraperapi.com']
+    scraped_time = datetime.now().isoformat(timespec='seconds')
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -41,7 +42,7 @@ class AvitoSpider(scrapy.Spider):
     def get_publish_date(ad) -> str:
         try:
             unix_time = int(ad['sortTimeStamp']) // 1000
-            return datetime.fromtimestamp(unix_time).isoformat()
+            return datetime.fromtimestamp(unix_time).isoformat(timespec='seconds')
         except Exception as e:
             logging.debug(f"Failed to get publish date. {e}")
 
@@ -189,5 +190,5 @@ class AvitoSpider(scrapy.Spider):
                 'link': self.get_link(ad),
                 'actual': True,
                 'source': self.name,
-                'scraped_at': datetime.now().isoformat(),
+                'scraped_at': self.scraped_time,
             }

@@ -13,6 +13,7 @@ from transliterate import translit
 class YoulaSpider(scrapy.Spider):
     name = 'amru'
     allowed_domains = ['youla.ru', 'am.ru']
+    scraped_time = datetime.now().isoformat(timespec='seconds')
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -41,7 +42,7 @@ class YoulaSpider(scrapy.Spider):
     def get_publish_date(ad) -> str:
         try:
             unix_time = int(ad["actualizationDate"][2:]) // 1000
-            return datetime.fromtimestamp(unix_time).isoformat()
+            return datetime.fromtimestamp(unix_time).isoformat(timespec='seconds')
         except Exception as e:
             logging.debug(f"Failed to get publish date. {e}")
 
@@ -184,5 +185,5 @@ class YoulaSpider(scrapy.Spider):
                 'link': self.get_link(ad),
                 'actual': True,
                 'source': self.name,
-                'scraped_at': datetime.now().isoformat(),
+                'scraped_at': self.scraped_time,
             }

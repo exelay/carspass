@@ -2,7 +2,6 @@ import json
 import yaml
 import logging
 from datetime import datetime
-from transliterate import translit
 
 import scrapy
 
@@ -10,6 +9,7 @@ import scrapy
 class DromSpider(scrapy.Spider):
     name = 'drom'
     allowed_domains = ['drom.ru']
+    scraped_time = datetime.now().isoformat(timespec='seconds')
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -56,7 +56,7 @@ class DromSpider(scrapy.Spider):
                 unix_time = datetime.timestamp(datetime.today())
                 unix_time -= 24 * 3600
 
-            return datetime.fromtimestamp(unix_time).isoformat()
+            return datetime.fromtimestamp(unix_time).isoformat(timespec='seconds')
         except Exception as e:
             logging.debug(f'Could not find publish date. Unexpected error: {e}')
 
@@ -203,5 +203,5 @@ class DromSpider(scrapy.Spider):
                 'link': self.get_link(ad),
                 'actual': self.get_actual(ad),
                 'source': self.name,
-                'scraped_at': datetime.now().isoformat(),
+                'scraped_at': self.scraped_time,
             }
