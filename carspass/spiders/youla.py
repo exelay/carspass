@@ -14,6 +14,11 @@ class YoulaSpider(scrapy.Spider):
     name = 'amru'
     allowed_domains = ['youla.ru', 'am.ru']
 
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        with open(f'dictionaries/map.{self.name}.json', 'r', encoding='utf-8') as file:
+            self.dictionary = json.load(file)
+
     def start_requests(self) -> scrapy.Request:
         url = 'https://auto.youla.ru/sankt-peterburg/cars/used/?searchOrder=104&publication=1'
         yield scrapy.Request(url=url, callback=self.parse_item, meta={'dont_proxy': True})
@@ -86,19 +91,18 @@ class YoulaSpider(scrapy.Spider):
         except Exception as e:
             logging.debug(f"Failed to get link. {e}")
 
-    @staticmethod
-    def get_brand(ad) -> str:
+    def get_brand(self, ad) -> str:
         try:
-            brand = ad['brandAlias']
-            return translit(brand, 'ru', reversed=True)
+            brand = translit(ad['brandAlias'], 'ru', reversed=True)
+            return self.dictionary[brand][0]
         except Exception as e:
             logging.debug(f"Failed to get brand. {e}")
 
-    @staticmethod
-    def get_model(ad) -> str:
+    def get_model(self, ad) -> str:
         try:
-            model = ad['modelAlias'].replace('_', '-')
-            return translit(model, 'ru', reversed=True)
+            brand = translit(ad['brandAlias'], 'ru', reversed=True)
+            model = translit(ad['modelAlias'], 'ru', reversed=True)
+            return self.dictionary[brand][1][model]
         except Exception as e:
             logging.debug(f"Failed to get model. {e}")
 

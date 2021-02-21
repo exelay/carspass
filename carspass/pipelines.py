@@ -18,9 +18,7 @@ class MongodbPipeline:
         self.client.close()
 
     def process_item(self, item, spider):
-        collection_name = 'carspass'
-
-        self.db[collection_name].update_one(
+        self.collection.update_one(
             filter={'id': item['id'], 'source': item['source']},
             update={'$set': item},
             upsert=True
