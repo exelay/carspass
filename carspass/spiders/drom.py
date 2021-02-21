@@ -11,6 +11,11 @@ class DromSpider(scrapy.Spider):
     name = 'drom'
     allowed_domains = ['drom.ru']
 
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        with open(f'dictionaries/map.{self.name}.json', 'r', encoding='utf-8') as file:
+            self.dictionary = json.load(file)
+
     def start_requests(self):
         url = 'https://spb.drom.ru/auto/used/all?distance=200'
         yield scrapy.Request(url=url, callback=self.parse_item, meta={'dont_proxy': True})
@@ -100,19 +105,18 @@ class DromSpider(scrapy.Spider):
         except Exception as e:
             logging.debug(f"Failed to get link. {e}")
 
-    @staticmethod
-    def get_brand(ad) -> str:
+    def get_brand(self, ad) -> str:
         try:
-            link = ad['url']
-            return link.split('/')[3]
+            brand = ad['url'].split('/')[3]
+            return self.dictionary[brand][0]
         except Exception as e:
             logging.debug(f"Failed to get brand. {e}")
 
-    @staticmethod
-    def get_model(ad) -> str:
+    def get_model(self, ad) -> str:
         try:
-            link = ad['url']
-            return link.split('/')[4]
+            brand = ad['url'].split('/')[3]
+            model = ad['url'].split('/')[4]
+            return self.dictionary[brand][1][model]
         except Exception as e:
             logging.debug(f"Failed to get model. {e}")
 
