@@ -11,6 +11,11 @@ class AutoSpider(scrapy.Spider):
     allowed_domains = ['auto.ru']
     scraped_time = datetime.now().isoformat(timespec='seconds')
 
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        with open(f'dictionaries/map.{self.name}.json', 'r', encoding='utf-8') as file:
+            self.dictionary = json.load(file)
+
     def start_requests(self):
         url = 'https://auto.ru/sankt-peterburg/cars/used/?sort=cr_date-desc&top_days=1'
         yield scrapy.Request(url=url, callback=self.parse_item, meta={'dont_proxy': True})
@@ -109,19 +114,18 @@ class AutoSpider(scrapy.Spider):
         except Exception as e:
             logging.debug(f"Failed to get link. {e}")
 
-    @staticmethod
-    def get_brand(ad):
+    def get_brand(self, ad):
         try:
-            link = ad.xpath('.//a[@class="Link ListingItemTitle-module__link"]/@href').get()
-            return link.split('/')[6]
+            brand = ad.xpath('.//a[@class="Link ListingItemTitle-module__link"]/@href').get().split('/')[6]
+            return self.dictionary[brand][0]
         except Exception as e:
             logging.debug(f"Failed to get brand. {e}")
 
-    @staticmethod
-    def get_model(ad):
+    def get_model(self, ad):
         try:
-            link = ad.xpath('.//a[@class="Link ListingItemTitle-module__link"]/@href').get()
-            return link.split('/')[7]
+            brand = ad.xpath('.//a[@class="Link ListingItemTitle-module__link"]/@href').get().split('/')[6]
+            model = ad.xpath('.//a[@class="Link ListingItemTitle-module__link"]/@href').get().split('/')[7]
+            return self.dictionary[brand][1][model]
         except Exception as e:
             logging.debug(f"Failed to get model. {e}")
 
