@@ -14,6 +14,11 @@ class AvitoSpider(scrapy.Spider):
     name = 'avito'
     allowed_domains = ['avito.ru', 'api.scraperapi.com']
 
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        with open(f'dictionaries/map.{self.name}.json', 'r', encoding='utf-8') as file:
+            self.dictionary = json.load(file)
+
     def start_requests(self) -> scrapy.Request:
         url = 'https://www.avito.ru/sankt-peterburg/avtomobili/s_probegom?radius=200&s=104'
         yield scrapy.Request(client.scrapyGet(url=url), callback=self.parse_item, meta={'dont_proxy': True})
@@ -89,21 +94,18 @@ class AvitoSpider(scrapy.Spider):
         except Exception as e:
             logging.debug(f"Failed to get link. {e}")
 
-    @staticmethod
-    def get_brand(ad) -> str:
+    def get_brand(self, ad) -> str:
         try:
-            url = ad["urlPath"]
-            car_metadata = url.split('/')[-1].split('_')
-            return car_metadata[0]
+            brand = ad["urlPath"].split('/')[-1].split('_')[0]
+            return self.dictionary[brand][0]
         except Exception as e:
             logging.debug(f"Failed to get brand. {e}")
 
-    @staticmethod
-    def get_model(ad) -> str:
+    def get_model(self, ad) -> str:
         try:
-            url = ad["urlPath"]
-            car_metadata = url.split('/')[-1].split('_')
-            return car_metadata[1]
+            brand = ad["urlPath"].split('/')[-1].split('_')[0]
+            model = ad["urlPath"].split('/')[-1].split('_')[1]
+            return self.dictionary[brand][1][model]
         except Exception as e:
             logging.debug(f"Failed to get model. {e}")
 
