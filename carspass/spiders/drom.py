@@ -105,18 +105,20 @@ class DromSpider(scrapy.Spider):
         except Exception as e:
             logging.debug(f"Failed to get link. {e}")
 
-    def get_brand(self, ad) -> str:
+    @staticmethod
+    def get_brand(ad) -> str:
         try:
             brand = ad['url'].split('/')[3]
-            return self.dictionary[brand][0]
+            return brand
         except Exception as e:
             logging.debug(f"Failed to get brand. {e}")
 
-    def get_model(self, ad) -> str:
+    @staticmethod
+    def get_model(ad) -> str:
         try:
             brand = ad['url'].split('/')[3]
             model = ad['url'].split('/')[4]
-            return self.dictionary[brand][1][model]
+            return model
         except Exception as e:
             logging.debug(f"Failed to get model. {e}")
 
@@ -204,4 +206,6 @@ class DromSpider(scrapy.Spider):
                 'actual': self.get_actual(ad),
                 'source': self.name,
                 'scraped_at': self.scraped_time,
+                'source_brand': self.get_brand(ad),
+                'source_model': self.get_model(ad),
             }

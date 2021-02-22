@@ -114,18 +114,20 @@ class AutoSpider(scrapy.Spider):
         except Exception as e:
             logging.debug(f"Failed to get link. {e}")
 
-    def get_brand(self, ad):
+    @staticmethod
+    def get_brand(ad):
         try:
             brand = ad.xpath('.//a[@class="Link ListingItemTitle-module__link"]/@href').get().split('/')[6]
-            return self.dictionary[brand][0]
+            return brand
         except Exception as e:
             logging.debug(f"Failed to get brand. {e}")
 
-    def get_model(self, ad):
+    @staticmethod
+    def get_model(ad):
         try:
             brand = ad.xpath('.//a[@class="Link ListingItemTitle-module__link"]/@href').get().split('/')[6]
             model = ad.xpath('.//a[@class="Link ListingItemTitle-module__link"]/@href').get().split('/')[7]
-            return self.dictionary[brand][1][model]
+            return model
         except Exception as e:
             logging.debug(f"Failed to get model. {e}")
 
@@ -208,5 +210,7 @@ class AutoSpider(scrapy.Spider):
                 'link': self.get_link(ad),
                 'actual': True,
                 'source': self.name,
+                'source_brand': self.get_brand(ad),
+                'source_model': self.get_model(ad),
                 'scraped_at': self.scraped_time,
             }

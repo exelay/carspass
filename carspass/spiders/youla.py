@@ -92,18 +92,20 @@ class YoulaSpider(scrapy.Spider):
         except Exception as e:
             logging.debug(f"Failed to get link. {e}")
 
-    def get_brand(self, ad) -> str:
+    @staticmethod
+    def get_brand(ad) -> str:
         try:
             brand = translit(ad['brandAlias'], 'ru', reversed=True)
-            return self.dictionary[brand][0]
+            return brand
         except Exception as e:
             logging.debug(f"Failed to get brand. {e}")
 
-    def get_model(self, ad) -> str:
+    @staticmethod
+    def get_model(ad) -> str:
         try:
             brand = translit(ad['brandAlias'], 'ru', reversed=True)
             model = translit(ad['modelAlias'], 'ru', reversed=True)
-            return self.dictionary[brand][1][model]
+            return model
         except Exception as e:
             logging.debug(f"Failed to get model. {e}")
 
@@ -185,5 +187,7 @@ class YoulaSpider(scrapy.Spider):
                 'link': self.get_link(ad),
                 'actual': True,
                 'source': self.name,
+                'source_brand': self.get_brand(ad),
+                'source_model': self.get_model(ad),
                 'scraped_at': self.scraped_time,
             }
