@@ -18,6 +18,11 @@ class MongodbPipeline:
         self.client.close()
 
     def process_item(self, item, spider):
+        if item.get('pined'):
+            if self.collection.find_one():
+                item.pop('publish_date')
+                print(item.get('pined'))
+        item.pop('pined', None)
         self.collection.update_one(
             filter={'id': item['id'], 'source': item['source']},
             update={'$set': item},

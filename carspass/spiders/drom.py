@@ -180,6 +180,13 @@ class DromSpider(scrapy.Spider):
         except Exception as e:
             logging.debug(f"Failed to get actual. {e}")
 
+    @staticmethod
+    def is_pined(ad):
+        if ad.get('promotionStatus'):
+            return True
+        else:
+            return False
+
     def parse_item(self, response):
         site_data = response.xpath('//script[@data-drom-module="bulls-list"]/@data-drom-module-data').get()
         ads = json.loads(site_data)['bullList']['bullsData'][0]['bulls']
@@ -205,6 +212,7 @@ class DromSpider(scrapy.Spider):
                 'link': self.get_link(ad),
                 'actual': self.get_actual(ad),
                 'source': self.name,
+                'pined': self.is_pined(ad),
                 'scraped_at': self.scraped_time,
                 'source_brand': self.get_brand(ad),
                 'source_model': self.get_model(ad),
