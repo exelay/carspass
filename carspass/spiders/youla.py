@@ -15,13 +15,16 @@ class YoulaSpider(scrapy.Spider):
     allowed_domains = ['youla.ru', 'am.ru']
     scraped_time = datetime.now().isoformat(timespec='seconds')
 
-    def __init__(self, **kwargs):
+    def __init__(self, city, **kwargs):
         super().__init__(**kwargs)
         with open(f'dictionaries/map.{self.name}.json', 'r', encoding='utf-8') as file:
             self.dictionary = json.load(file)
+        with open(f'conventions/{self.name}.yaml') as f:
+            self.conventions = yaml.load(f, Loader=yaml.FullLoader)
+        self.city = self.conventions['city'][city]
 
     def start_requests(self) -> scrapy.Request:
-        url = 'https://auto.youla.ru/sankt-peterburg/cars/used/?searchOrder=104&publication=1'
+        url = f'https://auto.youla.ru/{self.city}/cars/used/?searchOrder=104&publication=1'
         yield scrapy.Request(url=url, callback=self.parse_item, meta={'dont_proxy': True})
 
     @staticmethod
@@ -128,18 +131,14 @@ class YoulaSpider(scrapy.Spider):
     def get_transmission(self, ad) -> str:
         try:
             transmission = ad['info'][1][5][1][3]
-            with open(f'conventions/{self.name}.yaml') as f:
-                transmissions = yaml.load(f, Loader=yaml.FullLoader)['transmission']
-            return transmissions[transmission]
+            return self.conventions['transmission'][transmission]
         except Exception as e:
             logging.debug(f"Failed to get transmission. {e}")
 
     def get_frame_type(self, ad) -> str:
         try:
             frame_type = int(ad["searchQuery"][1][1])
-            with open(f'conventions/{self.name}.yaml') as f:
-                frame_types = yaml.load(f, Loader=yaml.FullLoader)['frame_type']
-            return frame_types[frame_type]
+            return self.conventions['frame_type'][frame_type]
         except Exception as e:
             logging.debug(f"Failed to get frame type. {e}")
 
