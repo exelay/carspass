@@ -1,14 +1,6 @@
 city:
-  Санкт-Петербург: spb
-  Москва: msk
-  Новосибирск: nvs
-  Казань: kzn
-  Владивосток: vvo
-  Екатеринбург: ekb
-  Калининград: kgd
-  Псков: pkv
-  Приозерск: pzk
-  Иркутск: ikt
+  spb: spb
+  msk: moscow
 
 transmission:
   механика: mt

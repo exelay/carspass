@@ -11,13 +11,16 @@ class DromSpider(scrapy.Spider):
     allowed_domains = ['drom.ru']
     scraped_time = datetime.now().isoformat(timespec='seconds')
 
-    def __init__(self, **kwargs):
+    def __init__(self, city, **kwargs):
         super().__init__(**kwargs)
         with open(f'dictionaries/map.{self.name}.json', 'r', encoding='utf-8') as file:
             self.dictionary = json.load(file)
+        with open(f'conventions/{self.name}.yaml') as f:
+            self.conventions = yaml.load(f, Loader=yaml.FullLoader)
+        self.city = self.conventions['city'][city]
 
     def start_requests(self):
-        url = 'https://spb.drom.ru/auto/used/all?distance=200'
+        url = f'https://{self.city}.drom.ru/auto/used/all?distance=200'
         yield scrapy.Request(url=url, callback=self.parse_item, meta={'dont_proxy': True})
 
     @staticmethod
@@ -149,13 +152,10 @@ class DromSpider(scrapy.Spider):
         except Exception as e:
             logging.debug(f"Failed to get transmission. {e}")
 
-    @staticmethod
-    def get_frame_type(ad):
+    def get_frame_type(self, ad):
         try:
             frame_type = ad['frameType']
-            with open('conventions/drom.yaml') as f:
-                frame_types = yaml.load(f, Loader=yaml.FullLoader)['frame_type']
-            return frame_types[frame_type]
+            return self.conventions['frame_type'][frame_type]
         except Exception as e:
             logging.debug(f"Failed to get frame type. {e}")
 
