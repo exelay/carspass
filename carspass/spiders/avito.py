@@ -15,13 +15,16 @@ class AvitoSpider(scrapy.Spider):
     allowed_domains = ['avito.ru', 'api.scraperapi.com']
     scraped_time = datetime.now().isoformat(timespec='seconds')
 
-    def __init__(self, **kwargs):
+    def __init__(self, city, **kwargs):
         super().__init__(**kwargs)
         with open(f'dictionaries/map.{self.name}.json', 'r', encoding='utf-8') as file:
             self.dictionary = json.load(file)
+        with open(f'conventions/{self.name}.yaml') as f:
+            self.conventions = yaml.load(f, Loader=yaml.FullLoader)
+        self.city = self.conventions['city'][city]
 
     def start_requests(self) -> scrapy.Request:
-        url = 'https://www.avito.ru/sankt-peterburg/avtomobili/s_probegom?radius=200&s=104'
+        url = f'https://www.avito.ru/{self.city}/avtomobili/s_probegom?radius=200&s=104'
         yield scrapy.Request(client.scrapyGet(url=url), callback=self.parse_item, meta={'dont_proxy': True})
 
     @staticmethod
@@ -142,9 +145,7 @@ class AvitoSpider(scrapy.Spider):
         try:
             car_data = ad['iva']['AutoParamsStep'][0]['payload']['text']
             frame_type = car_data.split()[7].strip(',')
-            with open(f'conventions/{self.name}.yaml') as f:
-                frame_types = yaml.load(f, Loader=yaml.FullLoader)['frame_type']
-            return frame_types[frame_type]
+            return self.conventions['frame_type'][frame_type]
         except Exception as e:
             logging.debug(f"Failed to get frame type. {e}")
 
