@@ -126,9 +126,8 @@ class AvitoSpider(scrapy.Spider):
     @staticmethod
     def get_year(ad) -> int:
         try:
-            url = ad["urlPath"]
-            car_metadata = url.split('/')[-1].split('_')
-            return int(car_metadata[2])
+            year = ad['title'].split(',')[1]
+            return int(year)
         except Exception as e:
             logging.debug(f"Failed to get year. {e}")
 
