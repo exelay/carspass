@@ -5,7 +5,7 @@ import pymongo
 
 client = pymongo.MongoClient(
     "mongodb+srv://imdb:rowdy0987@carspass.mskrx.mongodb.net/<dbname>?retryWrites=true&w=majority"
-        )
+)
 db = client["Carspass"]
 collection = db['carspass']
 

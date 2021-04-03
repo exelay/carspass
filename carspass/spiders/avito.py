@@ -6,8 +6,10 @@ from datetime import datetime
 import scrapy
 from scraper_api import ScraperAPIClient
 
+from config import SCRAPER_API_TOKEN
 
-client = ScraperAPIClient('593e157d53727b72a8a825660cd50868')
+
+client = ScraperAPIClient(SCRAPER_API_TOKEN)
 
 
 class AvitoSpider(scrapy.Spider):
