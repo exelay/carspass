@@ -21,6 +21,10 @@ class MappingUpdater:
             self.mapping = json.load(f)
 
     def update_brand(self, _id, brand):
+        self.collection.update_one(
+            filter={'_id': _id},
+            update={'$set': {'source_brand': brand}}
+        )
         try:
             new_brand = self.mapping[brand][0]
             if brand != new_brand:
@@ -35,13 +39,17 @@ class MappingUpdater:
             print(e)
 
     def update_model(self, _id, brand, model):
+        self.collection.update_one(
+            filter={'_id': _id},
+            update={'$set': {'source_model': model}}
+        )
         try:
             new_model = self.mapping[brand][1][model]
             if model != new_model:
                 print(f"{brand} - {model} >>> {brand} - {new_model}")
                 self.collection.update_one(
                     filter={'_id': _id},
-                    update={'$set': {'brand': new_model}}
+                    update={'$set': {'model': new_model}}
                 )
         except KeyError:
             pass
