@@ -20,7 +20,7 @@ class AvitoSpider(scrapy.Spider):
     def __init__(self, city, **kwargs):
         super().__init__(**kwargs)
         with open(f'dictionaries/map.{self.name}.json', 'r', encoding='utf-8') as file:
-            self.dictionary = json.load(file)
+            self.mapping = json.load(file)
         with open(f'conventions/{self.name}.yaml') as f:
             self.conventions = yaml.load(f, Loader=yaml.FullLoader)
         self.city = self.conventions['city'][city]
@@ -100,8 +100,25 @@ class AvitoSpider(scrapy.Spider):
         except Exception as e:
             logging.debug(f"Failed to get link. {e}")
 
+    def get_brand(self, ad) -> str:
+        try:
+            source_brand = ad["urlPath"].split('/')[-1].split('_')[0]
+            brand = self.mapping[source_brand][0]
+            return brand
+        except Exception as e:
+            logging.debug(f"Failed to get brand. {e}")
+
+    def get_model(self, ad) -> str:
+        try:
+            source_brand = ad["urlPath"].split('/')[-1].split('_')[0]
+            source_model = ad["urlPath"].split('/')[-1].split('_')[1]
+            model = self.mapping[source_brand][1][source_model]
+            return model
+        except Exception as e:
+            logging.debug(f"Failed to get model. {e}")
+
     @staticmethod
-    def get_brand(ad) -> str:
+    def get_source_brand(ad) -> str:
         try:
             brand = ad["urlPath"].split('/')[-1].split('_')[0]
             return brand
@@ -109,7 +126,7 @@ class AvitoSpider(scrapy.Spider):
             logging.debug(f"Failed to get brand. {e}")
 
     @staticmethod
-    def get_model(ad) -> str:
+    def get_source_model(ad) -> str:
         try:
             model = ad["urlPath"].split('/')[-1].split('_')[1]
             return model
@@ -193,7 +210,7 @@ class AvitoSpider(scrapy.Spider):
                 'link': self.get_link(ad),
                 'actual': True,
                 'source': self.name,
-                'source_brand': self.get_brand(ad),
-                'source_model': self.get_model(ad),
+                'source_brand': self.get_source_brand(ad),
+                'source_model': self.get_source_model(ad),
                 'scraped_at': self.scraped_time,
             }

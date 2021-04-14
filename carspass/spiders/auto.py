@@ -14,7 +14,7 @@ class AutoSpider(scrapy.Spider):
     def __init__(self, city, **kwargs):
         super().__init__(**kwargs)
         with open(f'dictionaries/map.{self.name}.json', 'r', encoding='utf-8') as file:
-            self.dictionary = json.load(file)
+            self.mapping = json.load(file)
         with open(f'conventions/{self.name}.yaml') as f:
             self.conventions = yaml.load(f, Loader=yaml.FullLoader)
         self.city = self.conventions['city'][city]
@@ -117,8 +117,25 @@ class AutoSpider(scrapy.Spider):
         except Exception as e:
             logging.debug(f"Failed to get link. {e}")
 
+    def get_brand(self, ad):
+        try:
+            source_brand = ad.xpath('.//a[@class="Link ListingItemTitle-module__link"]/@href').get().split('/')[6]
+            brand = self.mapping[source_brand][0]
+            return brand
+        except Exception as e:
+            logging.debug(f"Failed to get brand. {e}")
+
+    def get_model(self, ad):
+        try:
+            source_brand = ad.xpath('.//a[@class="Link ListingItemTitle-module__link"]/@href').get().split('/')[6]
+            source_model = ad.xpath('.//a[@class="Link ListingItemTitle-module__link"]/@href').get().split('/')[7]
+            model = self.mapping[source_brand][1][source_model]
+            return model
+        except Exception as e:
+            logging.debug(f"Failed to get model. {e}")
+
     @staticmethod
-    def get_brand(ad):
+    def get_source_brand(ad):
         try:
             brand = ad.xpath('.//a[@class="Link ListingItemTitle-module__link"]/@href').get().split('/')[6]
             return brand
@@ -126,9 +143,8 @@ class AutoSpider(scrapy.Spider):
             logging.debug(f"Failed to get brand. {e}")
 
     @staticmethod
-    def get_model(ad):
+    def get_source_model(ad):
         try:
-            brand = ad.xpath('.//a[@class="Link ListingItemTitle-module__link"]/@href').get().split('/')[6]
             model = ad.xpath('.//a[@class="Link ListingItemTitle-module__link"]/@href').get().split('/')[7]
             return model
         except Exception as e:
@@ -209,7 +225,7 @@ class AutoSpider(scrapy.Spider):
                 'link': self.get_link(ad),
                 'actual': True,
                 'source': self.name,
-                'source_brand': self.get_brand(ad),
-                'source_model': self.get_model(ad),
+                'source_brand': self.get_source_brand(ad),
+                'source_model': self.get_source_model(ad),
                 'scraped_at': self.scraped_time,
             }

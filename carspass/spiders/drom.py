@@ -14,7 +14,7 @@ class DromSpider(scrapy.Spider):
     def __init__(self, city, **kwargs):
         super().__init__(**kwargs)
         with open(f'dictionaries/map.{self.name}.json', 'r', encoding='utf-8') as file:
-            self.dictionary = json.load(file)
+            self.mapping = json.load(file)
         with open(f'conventions/{self.name}.yaml') as f:
             self.conventions = yaml.load(f, Loader=yaml.FullLoader)
         self.city = self.conventions['city'][city]
@@ -108,8 +108,25 @@ class DromSpider(scrapy.Spider):
         except Exception as e:
             logging.debug(f"Failed to get link. {e}")
 
+    def get_brand(self, ad) -> str:
+        try:
+            source_brand = ad['url'].split('/')[3]
+            brand = self.mapping[source_brand][0]
+            return brand
+        except Exception as e:
+            logging.debug(f"Failed to get brand. {e}")
+
+    def get_model(self, ad) -> str:
+        try:
+            source_brand = ad['url'].split('/')[3]
+            source_model = ad['url'].split('/')[4]
+            model = self.mapping[source_brand][1][source_model]
+            return model
+        except Exception as e:
+            logging.debug(f"Failed to get model. {e}")
+
     @staticmethod
-    def get_brand(ad) -> str:
+    def get_source_brand(ad) -> str:
         try:
             brand = ad['url'].split('/')[3]
             return brand
@@ -117,9 +134,8 @@ class DromSpider(scrapy.Spider):
             logging.debug(f"Failed to get brand. {e}")
 
     @staticmethod
-    def get_model(ad) -> str:
+    def get_source_model(ad) -> str:
         try:
-            brand = ad['url'].split('/')[3]
             model = ad['url'].split('/')[4]
             return model
         except Exception as e:
@@ -214,6 +230,6 @@ class DromSpider(scrapy.Spider):
                 'source': self.name,
                 'pined': self.is_pined(ad),
                 'scraped_at': self.scraped_time,
-                'source_brand': self.get_brand(ad),
-                'source_model': self.get_model(ad),
+                'source_brand': self.get_source_brand(ad),
+                'source_model': self.get_source_model(ad),
             }
