@@ -7,11 +7,15 @@ SCRAPER_API_TOKEN = str(os.getenv('SCRAPER_API_TOKEN'))
 
 MONGODB_USER = str(os.getenv('MONGODB_USER'))
 MONGODB_PASSWORD = str(os.getenv('MONGODB_PASSWORD'))
+MONGODB_IP = str(os.getenv('MONGODB_IP'))
+MONGODB_PORT = str(os.getenv('MONGODB_PORT'))
 MONGODB_URI = (
-    f"mongodb+srv://{MONGODB_USER}:{MONGODB_PASSWORD}@carspass.mskrx.mongodb.net/<dbname>?retryWrites=true&w=majority"
+    f"mongodb://{MONGODB_USER}:{MONGODB_PASSWORD}@{MONGODB_IP}:{MONGODB_PORT}/"
+    f"?authSource=admin&readPreference=primary"
+    "&appname=MongoDB%20Compass&ssl=false"
 )
 
-DROM_BRAND_LIST = ['acura', 'alfa_romeo', 'alpina', 'asia', 'aston_martin', 'audi', 'bentley', 'bmw', 'bogdan',
+DROM_BRAND_LIST = ('acura', 'alfa_romeo', 'alpina', 'asia', 'aston_martin', 'audi', 'bentley', 'bmw', 'bogdan',
                    'brilliance', 'bugatti', 'buick', 'byd', 'cadillac', 'changan', 'chery', 'cheryexeed', 'chevrolet',
                    'chrysler', 'citroen', 'dacia', 'daewoo', 'daihatsu', 'daimler', 'datsun', 'derways', 'dodge',
                    'dongfeng', 'dw_hover', 'eagle', 'faw', 'ferrari', 'fiat', 'ford', 'foton', 'gac', 'gaz', 'geely',
@@ -22,9 +26,9 @@ DROM_BRAND_LIST = ['acura', 'alfa_romeo', 'alpina', 'asia', 'aston_martin', 'aud
                    'moskvitch', 'nissan', 'oldsmobile', 'opel', 'other', 'peugeot', 'plymouth', 'pontiac', 'porsche',
                    'proton', 'ravon', 'renault', 'renault_samsung', 'rolls-royce', 'rover', 'saab', 'saturn', 'scion',
                    'seat', 'skoda', 'smart', 'ssang_yong', 'subaru', 'suzuki', 'tagaz', 'tesla', 'tianye', 'toyota',
-                   'uaz', 'volkswagen', 'volvo', 'vortex', 'xin_kai', 'zaz', 'zotye', 'zx']
+                   'uaz', 'volkswagen', 'volvo', 'vortex', 'xin_kai', 'zaz', 'zotye', 'zx')
 
-AUTORU_BRAND_LIST = ['ac', 'acura', 'adler', 'alfa_romeo', 'alpina', 'alpine', 'amc', 'am_general', 'apal', 'ariel',
+AUTORU_BRAND_LIST = ('ac', 'acura', 'adler', 'alfa_romeo', 'alpina', 'alpine', 'amc', 'am_general', 'apal', 'ariel',
                      'aro', 'asia', 'aston_martin', 'audi', 'aurus', 'austin', 'austin_healey', 'autobianchi',
                      'avtokam', 'baic', 'bajaj', 'baltijas_dzips', 'batmobile', 'bentley', 'bertone', 'bilenkin',
                      'bio_auto', 'bitter', 'bmw', 'borgward', 'brabus', 'brilliance', 'bristol', 'bufori', 'bugatti',
@@ -53,9 +57,9 @@ AUTORU_BRAND_LIST = ['ac', 'acura', 'adler', 'alfa_romeo', 'alpina', 'alpine', '
                      'toyota', 'trabant', 'tramontana', 'triumph', 'tvr', 'uaz', 'ultima', 'vauxhall', 'vector',
                      'venturi', 'volkswagen', 'volvo', 'vortex', 'wanderer', 'wartburg', 'westfield', 'wiesmann',
                      'willis', 'w_motors', 'xinkai', 'xpeng', 'yulon', 'zastava', 'zaz', 'zenos', 'zenvo', 'zibar',
-                     'zil', 'zis', 'zotye', 'zx']
+                     'zil', 'zis', 'zotye', 'zx')
 
-AVITO_BRAND_LIST = ['ac', 'acura', 'adler', 'alfa_romeo', 'alpina', 'amc', 'apal', 'aro', 'asia', 'aston_martin',
+AVITO_BRAND_LIST = ('ac', 'acura', 'adler', 'alfa_romeo', 'alpina', 'amc', 'apal', 'aro', 'asia', 'aston_martin',
                     'audi', 'austin', 'austin_healey', 'avtokam', 'bajaj', 'baltijas_dzips', 'barkas', 'baw', 'bentley',
                     'bio_auto', 'bmw', 'bogdan', 'brilliance', 'buick', 'byd', 'cadillac', 'caterham', 'changan',
                     'changfeng', 'changhe', 'chery', 'cheryexeed', 'chevrolet', 'chrysler', 'citroen', 'dacia', 'dadi',
@@ -72,4 +76,4 @@ AVITO_BRAND_LIST = ['ac', 'acura', 'adler', 'alfa_romeo', 'alpina', 'amc', 'apal
                     'scion', 'seat', 'shuanghuan', 'skoda', 'sma', 'smart', 'smz', 'ssangyong', 'steyr', 'studebaker',
                     'subaru', 'suzuki', 'tagaz', 'tata', 'tatra', 'tazzari', 'tesla', 'tianma', 'tianye', 'toyota',
                     'trabant', 'triumph_165', 'uaz', 'vauxhall', 'vis', 'volkswagen', 'volvo', 'vortex', 'wanderer',
-                    'wartburg', 'westfield', 'willys', 'xin_kai', 'zaz', 'zil', 'zis', 'zotye', 'zuk', 'zx']
+                    'wartburg', 'westfield', 'willys', 'xin_kai', 'zaz', 'zil', 'zis', 'zotye', 'zuk', 'zx')
