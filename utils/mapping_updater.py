@@ -5,9 +5,6 @@ import pymongo
 from config import MONGODB_URI
 
 
-MONGODB_URI = "mongodb://root:Y4QbE5nHqP46QzvT@62.113.117.27:27017/?authSource=admin&readPreference=primary" \
-            "&appname=MongoDB%20Compass&ssl=false"
-
 sites = ('avito', 'amru', 'drom', 'autoru')
 
 
