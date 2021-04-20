@@ -11,7 +11,7 @@ class MongodbPipeline:
 
     def open_spider(self, spider):
         self.client = pymongo.MongoClient(MONGODB_URI)
-        self.db = self.client["Carspass"]
+        self.db = self.client["carspass"]
         self.collection = self.db['carspass']
 
     def close_spider(self, spider):
