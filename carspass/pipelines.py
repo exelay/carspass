@@ -1,5 +1,7 @@
 import pymongo
 
+from config import MONGODB_URI
+
 
 class MongodbPipeline:
 
@@ -8,9 +10,7 @@ class MongodbPipeline:
     collection = None
 
     def open_spider(self, spider):
-        self.client = pymongo.MongoClient(
-            "mongodb+srv://imdb:rowdy0987@carspass.mskrx.mongodb.net/<dbname>?retryWrites=true&w=majority"
-        )
+        self.client = pymongo.MongoClient(MONGODB_URI)
         self.db = self.client["Carspass"]
         self.collection = self.db['carspass']
 
